@@ -1,7 +1,4 @@
-package pro.sky.animalizer.BotConfiguration;
-
-
-
+package pro.sky.animalizer.TelegramBotConfiguration;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.DeleteMyCommands;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +18,4 @@ public class TelegramBotConfiguration {
         bot.execute(new DeleteMyCommands());
         return bot;
     }
-
-
-
 }
