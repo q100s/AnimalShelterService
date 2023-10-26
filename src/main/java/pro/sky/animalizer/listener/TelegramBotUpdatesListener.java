@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pro.sky.animalizer.Service.RequestService;
 import pro.sky.animalizer.model.Request;
 import pro.sky.animalizer.repositories.RequestRepository;
 
@@ -23,7 +24,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private TelegramBot telegramBot;
 
     @Autowired
-    private RequestRepository requestRepository;
+    private RequestService requestService;
 
 
     @PostConstruct
@@ -45,10 +46,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void testRequests() {
         System.out.println("Hello test-request");
 
-        if(requestRepository.countRequestsByChatId(111L) != 0) {
-            System.out.println("Обращение от  usera 111L уже было");
-        } else {
+        if(requestService.checkIfNewUser(111L)) {
             System.out.println("Обращение от  usera 111L НЕ было");
+        } else {
+            System.out.println("Обращение от  usera 111L уже было");
         }
 
         Request request = new Request();
@@ -57,15 +58,21 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         request.setRequestText("Test 111");
 
         System.out.println("Save request user 111L");
-        requestRepository.save(request);
-        if(requestRepository.countRequestsByChatId(111L) == 0) {
-            System.out.println("Обращений от chatID = 111L еще НЕ было");
+        requestService.saveRequest(request);
+        if(requestService.checkIfNewUser(111L)) {
+            System.out.println("Обращение от  usera 111L НЕ было");
         } else {
-            System.out.println("Обращение от chatID = 111L уже было " + requestRepository.countRequestsByChatId(111L) + " раз");
+            System.out.println("Обращение от  usera 111L уже было");
         }
 
-        System.out.println("Обращение от chatID = 333L было " + requestRepository.countRequestsByChatId(333L) + " раз");
+        if(requestService.checkIfNewUser(333L)) {
+            System.out.println("Обращение от  usera 333L НЕ было");
+        } else {
+            System.out.println("Обращение от  usera 333L уже было");
+        }
 
+        System.out.println(requestService.getAllRequests());
+        System.out.println(requestService.getAllRequestsByChatId(111L));
 
     } // end test if request from new chat_id
 }
