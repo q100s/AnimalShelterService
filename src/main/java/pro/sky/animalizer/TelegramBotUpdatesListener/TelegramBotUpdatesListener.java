@@ -75,6 +75,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     private void sendMessageWithButtons(long chatId) {
+        catOrDog.catDogInLineKeyBoard(chatId);
 
 
 
