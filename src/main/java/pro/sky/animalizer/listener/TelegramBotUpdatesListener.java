@@ -2,11 +2,13 @@ package pro.sky.animalizer.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,29 +33,56 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
-            Message message = update.message();
-            Long chatId = update.message().chat().id();
             logger.info("Processing update: {}", update);
-            if (update.message().newChatMembers() != null) {
-                telegramBot.execute(new SendMessage(chatId, "Hello! I'm an animal shelter's bot."));
-                sendMenuWithShelterPicking(chatId, telegramBot);
-            } else {
-                sendMenuWithShelterPicking(chatId, telegramBot);
+            Message message = update.message();
+            Long chatId = message.chat().id();
+            try {
+                if (update.message() == null) {
+                    createButtonClick(update);
+                } else {
+                    sendStartMessage(chatId);
+                    createButtonClick(update);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    private static void sendMenuWithShelterPicking(Long chatId, TelegramBot telegramBot) {
-        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup(
-                new InlineKeyboardButton[]{
-                        new InlineKeyboardButton("Cat's shelter").callbackData("Cat's shelter"),
-                        new InlineKeyboardButton("Dog's shelter").callbackData("Dog's shelter"),
-                });
-        telegramBot.execute(new SendMessage(chatId, "Please, pick the shelter").replyMarkup(inlineKeyboard));
+    private void sendStartMessage(Long chatId) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Cat's shelter").callbackData("Cat's shelter"));
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Dog's shelter").callbackData("Dog's shelter"));
+        SendMessage sendMessage = new SendMessage(chatId, "Please, pick the shelter");
+        sendMessage.replyMarkup(inlineKeyboardMarkup);
+        SendResponse sendResponse = telegramBot.execute(sendMessage);
+        if (!sendResponse.isOk()) {
+            logger.error("Error during sending message: {}", sendResponse.description());
+        }
+    }
+    private void createButtonClick(Update update) {
+        CallbackQuery callbackQuery = update.callbackQuery();
+        String data = callbackQuery.data();
+        Long chatId = update.message().chat().id();
+        switch (data) {
+            case "Cat's shelter":
+                getCatShelterClick(chatId);
+                break;
+            case "Dog's shelter":
+                getDogShelterClick(chatId);
+                break;
+        }
     }
 
-    private static void sendMenuWithInfoAndReport(Long chatId) {
-        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
+    private void getCatShelterClick(Long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "cat's menu");
+        telegramBot.execute(sendMessage);
+    }
+
+    private void getDogShelterClick(Long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "dog's menu");
+        telegramBot.execute(sendMessage);
     }
 }
+
