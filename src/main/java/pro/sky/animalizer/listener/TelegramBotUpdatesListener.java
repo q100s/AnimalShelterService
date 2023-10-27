@@ -35,8 +35,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         try {
             updates.forEach(update -> {
                 logger.info("Processing update: {}", update);
-                Message message = update.message();
-                Long chatId = message.chat().id();
                 if (update.message() == null) {
                     createButtonClick(update);
                 } else {
@@ -54,8 +52,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         Long chatId = message.from().id();
         String text = message.text();
         String firstName = update.message().from().firstName();
-        String userName = update.message().from().username();
-        long telegramId = update.message().from().id();
         if ("/start".equals(text)) {
             greetingNewUser(chatId, firstName);
         }
@@ -73,10 +69,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public InlineKeyboardMarkup createButtonsShelterTypeSelect() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("cat's shelter")
-                .callbackData("cat's shelter"));
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("dog's shelter")
-                .callbackData("dog's shelter"));
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("cat's shelter").callbackData("cat's shelter"));
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("dog's shelter").callbackData("dog's shelter"));
         return inlineKeyboardMarkup;
     }
 
