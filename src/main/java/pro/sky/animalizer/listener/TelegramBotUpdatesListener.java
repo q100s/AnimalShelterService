@@ -40,8 +40,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.message() == null) {
                     createButtonClick(update);
                 } else {
-                    sendStartMessage(chatId);
-                    createButtonClick(update);
+                    sendStartMessage(update);
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -50,39 +49,50 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    private void sendStartMessage(Long chatId) {
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Cat's shelter").callbackData("Cat's shelter"));
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Dog's shelter").callbackData("Dog's shelter"));
-        SendMessage sendMessage = new SendMessage(chatId, "Please, pick the shelter");
-        sendMessage.replyMarkup(inlineKeyboardMarkup);
+    private void sendStartMessage(Update update) {
+        Message message = update.message();
+        Long chatId = message.from().id();
+        String text = message.text();
+        String firstName = update.message().from().firstName();
+        String userName = update.message().from().username();
+        long telegramId = update.message().from().id();
+        if ("/start".equals(text)) {
+            greetingNewUser(chatId, firstName);
+        }
+    }
+
+    public void greetingNewUser(Long chatId, String name) {
+        SendMessage sendMessage =
+                new SendMessage(chatId, "hi");
+        sendMessage.replyMarkup(createButtonsShelterTypeSelect());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
             logger.error("Error during sending message: {}", sendResponse.description());
         }
     }
-    private void createButtonClick(Update update) {
+
+    public InlineKeyboardMarkup createButtonsShelterTypeSelect() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("cat's shelter")
+                .callbackData("cat's shelter"));
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("dog's shelter")
+                .callbackData("dog's shelter"));
+        return inlineKeyboardMarkup;
+    }
+
+    public void createButtonClick(Update update) {
         CallbackQuery callbackQuery = update.callbackQuery();
-        String data = callbackQuery.data();
-        Long chatId = update.message().chat().id();
-        switch (data) {
-            case "Cat's shelter":
-                getCatShelterClick(chatId);
-                break;
-            case "Dog's shelter":
-                getDogShelterClick(chatId);
-                break;
+        if (callbackQuery != null) {
+            String data = callbackQuery.data();
+            switch (data) {
+                case "cat's shelter":
+                    telegramBot.execute(new SendMessage(update.message().chat().id(), "cats"));
+                    break;
+                case "dog's shelter":
+                    telegramBot.execute(new SendMessage(update.message().chat().id(), "dogs"));
+                    break;
+            }
         }
-    }
-
-    private void getCatShelterClick(Long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "cat's menu");
-        telegramBot.execute(sendMessage);
-    }
-
-    private void getDogShelterClick(Long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "dog's menu");
-        telegramBot.execute(sendMessage);
     }
 }
 
