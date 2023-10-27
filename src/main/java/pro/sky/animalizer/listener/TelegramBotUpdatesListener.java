@@ -32,20 +32,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Override
     public int process(List<Update> updates) {
-        updates.forEach(update -> {
-            logger.info("Processing update: {}", update);
-            Message message = update.message();
-            Long chatId = message.chat().id();
-            try {
+        try {
+            updates.forEach(update -> {
+                logger.info("Processing update: {}", update);
+                Message message = update.message();
+                Long chatId = message.chat().id();
                 if (update.message() == null) {
                     createButtonClick(update);
                 } else {
                     sendStartMessage(update);
                 }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
+            });
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
@@ -63,7 +63,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public void greetingNewUser(Long chatId, String name) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "hi");
+                new SendMessage(chatId, "hi, " + name);
         sendMessage.replyMarkup(createButtonsShelterTypeSelect());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
