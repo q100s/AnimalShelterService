@@ -34,12 +34,23 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(List<Update> updates) {
         try {
             updates.forEach(update -> {
+                Message message = update.message();
+                String text;
+                Long chatId;
                 logger.info("Processing update: {}", update);
-                if (update.message() == null) {
-                    createButtonClick(update);
+                if (update.message() != null) {
+                    text = message.text();
+                    chatId = message.chat().id();
+                } else if (update.callbackQuery() != null) {
+                    text = update.callbackQuery().data();
+                    chatId = update.callbackQuery().message().chat().id();
                 } else {
-                    sendStartMessage(update);
+                    return;
                 }
+                if ("/start".equalsIgnoreCase(text)) {
+                    greetingNewUser(chatId);
+                }
+                createButtonClick(update, chatId);
             });
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -47,19 +58,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    private void sendStartMessage(Update update) {
-        Message message = update.message();
-        Long chatId = message.from().id();
-        String text = message.text();
-        String firstName = update.message().from().firstName();
-        if ("/start".equals(text)) {
-            greetingNewUser(chatId, firstName);
-        }
-    }
-
-    public void greetingNewUser(Long chatId, String name) {
+    public void greetingNewUser(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "hi, " + name);
+                new SendMessage(chatId, "Hello! Pick, please, the shelter!");
         sendMessage.replyMarkup(createButtonsShelterTypeSelect());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -74,16 +75,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return inlineKeyboardMarkup;
     }
 
-    public void createButtonClick(Update update) {
+    public void createButtonClick(Update update, Long chatId) {
         CallbackQuery callbackQuery = update.callbackQuery();
         if (callbackQuery != null) {
             String data = callbackQuery.data();
             switch (data) {
                 case "cat's shelter":
-                    telegramBot.execute(new SendMessage(update.message().chat().id(), "cats"));
+                    telegramBot.execute(new SendMessage(chatId, "cats"));
                     break;
                 case "dog's shelter":
-                    telegramBot.execute(new SendMessage(update.message().chat().id(), "dogs"));
+                    telegramBot.execute(new SendMessage(chatId, "dogs"));
                     break;
             }
         }
