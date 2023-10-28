@@ -1,5 +1,6 @@
 package pro.sky.animalizer.model;
 
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,15 +8,19 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+
+/**
+ * Класс Request для хранения в БД и обработки запросов телеграмм пользователей
+ */
 @Entity
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long chatId;
-    private LocalDateTime requestTime;
+    private Long id;  // уникальный id обращения
+    private Long chatId; // id телеграмм чата
+    private LocalDateTime requestTime;  // дата и время обращения
 
-    private String requestText;
+    private String requestText;  // текст обращения - с сутью обращения
 
     public Request() {
     }
