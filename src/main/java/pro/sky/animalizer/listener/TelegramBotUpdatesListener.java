@@ -2,6 +2,7 @@ package pro.sky.animalizer.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
@@ -202,4 +203,3 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
     }
 }
-
