@@ -1,8 +1,10 @@
-package pro.sky.animalizer.Service;
+package pro.sky.animalizer.service;
 
+import liquibase.pro.packaged.J;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.model.Request;
 import pro.sky.animalizer.repositories.RequestRepository;
@@ -41,7 +43,7 @@ public class RequestService {
 
     /**
      *Удаление обращения пользователя в БД по id обращения
-     * Использует метод репозитория  {@link JpaRepository#deleteById(id)}
+     * Использует метод репозитория  {@link JpaRepository#deleteById(Object)}
      * @param id
      */
     public void deleteRequest(Long id) {

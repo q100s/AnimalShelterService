@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pro.sky.animalizer.Service.RequestService;
 import pro.sky.animalizer.model.Request;
 import static java.time.LocalDateTime.now;
 

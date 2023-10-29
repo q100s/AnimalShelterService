@@ -10,3 +10,13 @@ CREATE TABLE shelter (
     direction_path_file VARCHAR,
     shelter_type VARCHAR
 );
+-- liquibase formatted sql
+
+-- changeset avolgin:2
+CREATE TABLE request (
+    id  BIGSERIAL,
+    chat_id BIGINT,
+    request_time TIMESTAMP,
+    request_text VARCHAR,
+    PRIMARY KEY(id)
+);
