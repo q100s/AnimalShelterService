@@ -1,4 +1,3 @@
 databaseChangeLog:
   - include:
-      file1: liquibase/scripts/shelter.sql
-      file2: liquibase/scripts/request.sql
+      file: liquibase/scripts/request.sql
