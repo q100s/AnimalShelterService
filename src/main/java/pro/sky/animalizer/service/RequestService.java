@@ -1,6 +1,5 @@
 package pro.sky.animalizer.service;
 
-import liquibase.pro.packaged.J;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ public class RequestService {
     /**
      * Сохранения обращения пользователя в БД
      * Использует метод репозитория  {@link JpaRepository#save(Object)}
+     *
      * @param request - обращение к записи в БД
      * @return обращение - результат записи в БД
      */
@@ -42,17 +42,20 @@ public class RequestService {
     }
 
     /**
-     *Удаление обращения пользователя в БД по id обращения
+     * Удаление обращения пользователя в БД по id обращения
      * Использует метод репозитория  {@link JpaRepository#deleteById(Object)}
+     *
      * @param id
      */
     public void deleteRequest(Long id) {
         logger.info("Was invoked method for delete request by id" + id);
         requestRepository.deleteById(id);
     }
+
     /**
      * Сохранение изменноего обращения пользователя в БД
      * Использует метод репозитория  {@link JpaRepository#save(Object)}
+     *
      * @param request - изменное обращение к записи в БД
      * @return обращение - результат записи в БД
      */
@@ -64,6 +67,7 @@ public class RequestService {
     /**
      * Получение всех обращений из БД
      * Использует метод репозитория  {@link JpaRepository#findAll()}
+     *
      * @return список всех обращей, всех пользователей из БД
      */
     public Collection<Request> getAllRequests() {
@@ -74,8 +78,9 @@ public class RequestService {
     /**
      * Получение всех обращений из БД конкретного пользователя по chat id в телеграмм
      * Использует метод репозитория  {@link RequestRepository#findAllRequestsByChatId(Long)}
-     * @return список всех обращей, всех пользователей из БД
+     *
      * @param chatId - chat id пользователя в телеграмм
+     * @return список всех обращей, всех пользователей из БД
      * @return Collection<Request> - список всех обращений пользователя с конкретным chat id
      */
     public Collection<Request> getAllRequestsByChatId(Long chatId) {
@@ -86,13 +91,14 @@ public class RequestService {
     /**
      * Проверка наличия обращений от пользователя - новый или не новый пользователь
      * Использует метод репозитория  {@link RequestRepository#countRequestsByChatId(Long)}
+     *
      * @param chatId - chat id пользователя в телеграмм
      * @return - TRUE если пользователь еще не обращался (новый), FALSE - если пользователь уже обращался
      */
     public boolean checkIfNewUser(Long chatId) {
         logger.info("Was invoked method for check if new user");
 
-        if(requestRepository.countRequestsByChatId(chatId) == 0) {
+        if (requestRepository.countRequestsByChatId(chatId) == 0) {
             return TRUE;
         } else {
             return FALSE;

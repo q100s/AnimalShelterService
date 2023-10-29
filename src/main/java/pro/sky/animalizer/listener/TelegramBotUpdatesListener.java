@@ -2,7 +2,6 @@ package pro.sky.animalizer.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
@@ -25,8 +24,8 @@ import java.util.List;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private final TelegramBot telegramBot;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
@@ -69,6 +68,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * Метод, генерирующий приветственное сообщение и меню c выбором приюта для нового пользователя.
      * #{@link TelegramBotUpdatesListener#createMenuWithShelterPicking()}. <br>
      * #{@link TelegramBot#execute(BaseRequest)}.
+     *
      * @param chatId идентификатор чата, для которого генерируется меню.
      */
     private void getMenuWithShelterPicking(Long chatId) {
@@ -80,9 +80,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.error("Error during sending message: {}", sendResponse.description());
         }
     }
+
     /**
      * Метод, генерирующий клавиатуру для выбора приюта.<br>
      * #{@link InlineKeyboardMarkup#addRow(InlineKeyboardButton...)} <br>
+     *
      * @return InlineKeyboardMarkup
      */
     private InlineKeyboardMarkup createMenuWithShelterPicking() {
@@ -91,6 +93,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Dog's shelter").callbackData("dog's shelter"));
         return inlineKeyboardMarkup;
     }
+
     /**
      * Метод, обрабатывающий резултаты нажатия на кнопки меню выбора приюта. <br>
      * #{@link TelegramBotUpdatesListener#getMenuAfterCatsShelterPicking(Long)} <br>
@@ -116,6 +119,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * Метод, генерирующий клавиатуру для выбора действия внутри меню приюта для кошек.<br>
      * #{@link InlineKeyboardMarkup#addRow(InlineKeyboardButton...)} <br>
+     *
      * @return InlineKeyboardMarkup
      */
     private InlineKeyboardMarkup createMenuAfterCatsShelterPick() {
@@ -128,9 +132,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 new InlineKeyboardButton("Call the volunteer").callbackData("volunteer calling"));
         return inlineKeyboardMarkup;
     }
+
     /**
      * Метод, генерирующий клавиатуру для выбора действия внутри меню приюта для собак.<br>
      * #{@link InlineKeyboardMarkup#addRow(InlineKeyboardButton...)} <br>
+     *
      * @return InlineKeyboardMarkup
      */
     private InlineKeyboardMarkup createMenuAfterDogsShelterPick() {
@@ -148,6 +154,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * Метод, генерирующий меню c выбором действий для приюта для кошек.
      * #{@link TelegramBotUpdatesListener#createMenuAfterCatsShelterPick()} <br>
      * #{@link TelegramBot#execute(BaseRequest)}
+     *
      * @param chatId идентификатор чата, для которого генерируется меню.
      */
     private void getMenuAfterCatsShelterPicking(Long chatId) {
@@ -159,10 +166,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.error("Error during sending message: {}", sendResponse.description());
         }
     }
+
     /**
      * Метод, генерирующий меню c выбором действий для приюта для собак.
      * #{@link TelegramBotUpdatesListener#createMenuAfterDogsShelterPick()} <br>
      * #{@link TelegramBot#execute(BaseRequest)}
+     *
      * @param chatId идентификатор чата, для которого генерируется меню.
      */
     private void getMenuAfterDogsShelterPicking(Long chatId) {
@@ -179,7 +188,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * Метод, обрабатывающий резултаты нажатия на кнопки внутри меню приютов. <br>
      * На данный момент результаты нажатия заглушены. <br>
      */
-        private void createClickOnShelterMenu(Update update) {
+    private void createClickOnShelterMenu(Update update) {
         CallbackQuery callbackQuery = update.callbackQuery();
         if (callbackQuery != null) {
             String data = callbackQuery.data();
@@ -197,8 +206,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Report taker"));
                     break;
                 case "volunteer calling":
-                telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Volunteer caller"));
-                break;
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Volunteer caller"));
+                    break;
             }
         }
     }

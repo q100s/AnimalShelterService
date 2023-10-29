@@ -9,18 +9,20 @@ import java.util.Collection;
 /**
  * Репозиторий обращений для работы с БД
  */
-public interface RequestRepository extends JpaRepository<Request,Long> {
+public interface RequestRepository extends JpaRepository<Request, Long> {
 
     /**
      * Подсчет количества обращений пользователя с конретным chat id в телеграмм
-     * @param chatId  - chat id пользователя в телеграмм
+     *
+     * @param chatId - chat id пользователя в телеграмм
      * @return int - общее число обращений пользователя с конкретным chat id в телеграмм
      */
     @Query(value = "SELECT COUNT(id)  FROM request WHERE chat_id = ?1", nativeQuery = true)
-    public int countRequestsByChatId(Long chatId);
+    int countRequestsByChatId(Long chatId);
 
     /**
      * Выборка из БД всех обращений одного пользователя по его телеграмм chat id
+     *
      * @param chatId - уникальный chat id пользователя в телеграмм
      * @return Collection<Request> - список всех запросов пользователя с конкретным телеграмм chat id
      */

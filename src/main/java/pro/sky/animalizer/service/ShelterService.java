@@ -21,20 +21,24 @@ public class ShelterService {
     public ShelterService(ShelterRepository repository) {
         this.repository = repository;
     }
+
     public Shelter getShelterById(Long shelterId) {
         logger.info("getShelterById method has been invoked");
         logger.debug("Requesting info for shelter with id: {}", shelterId);
         logger.error("There is no shelter with id: " + shelterId);
         return repository.findById(shelterId).orElseThrow(ShelterNotFoundException::new);
     }
+
     public List<Shelter> getAllShelters() {
         logger.info("getAllShelters method has been invoked");
         return repository.findAll();
     }
+
     public Shelter createShelter(Shelter shelter) {
         logger.info("createShelter method has been invoked");
         return repository.save(shelter);
     }
+
     public Shelter editShelter(Long shelterId, Shelter shelter) {
         logger.info("editShelter method has been invoked");
         logger.error("There is no shelter with id: " + shelterId);
@@ -47,6 +51,7 @@ public class ShelterService {
         Optional.ofNullable(shelter.getShelterType()).ifPresent(editedShelter::setShelterType);
         return repository.save(editedShelter);
     }
+
     public Shelter deleteShelter(Long shelterId) {
         logger.info("deleteShelter method has been invoked");
         logger.error("There is no shelter with id: " + shelterId);
