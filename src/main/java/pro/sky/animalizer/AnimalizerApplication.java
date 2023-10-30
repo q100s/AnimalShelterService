@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AnimalizerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AnimalizerApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(AnimalizerApplication.class, args);
+    }
 }
