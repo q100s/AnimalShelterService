@@ -6,13 +6,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+/**
+ * Класс-модель, описывающая User.
+ */
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    String fullName;
-    int phoneNumber;
+    private long id;
+    private String fullName;
+    private int phoneNumber;
 
     public long getId() {
         return id;

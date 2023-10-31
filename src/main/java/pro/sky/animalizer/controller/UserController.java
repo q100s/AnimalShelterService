@@ -1,13 +1,10 @@
 package pro.sky.animalizer.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.service.UserService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -19,10 +16,30 @@ public class UserController {
     }
 
     @GetMapping("/getAllUsers")
-    public void getAllUsers(){
+    public void getAllUsers() {
         userService.getAllUsers();
 
-   }
+    }
+
+    @PostMapping
+    public User createUser(User user) {
+        return userService.createUser(user);
+    }
+
+    @PutMapping
+    public ResponseEntity<User> editUser(@RequestBody User user) {
+        User userCheck = userService.editUser(user);
+        if (userCheck == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<User> removeUser(@PathVariable long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.ok().build();
+    }
 
 
 }
