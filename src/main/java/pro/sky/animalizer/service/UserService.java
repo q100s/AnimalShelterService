@@ -3,13 +3,12 @@ package pro.sky.animalizer.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.exceptions.UserNotFoundException;
+import pro.sky.animalizer.model.Shelter_user;
 import pro.sky.animalizer.repositories.UserRepository;
 
 import java.util.List;
-import java.util.Set;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,34 +19,39 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(User user) {
+    public Shelter_user createUser(Shelter_user shelterUser) {
         logger.info("start method createUser");
         logger.info("User created");
-        return userRepository.save(user);
+        return userRepository.save(shelterUser);
     }
 
-    public User findUserById(long id) {
+    public Shelter_user findUserById(long id) {
         logger.info("start method findUserById");
-        return userRepository.getById(id);
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public List<User> getAllUsers() {
+    public List<Shelter_user> getAllUsers() {
         logger.info("start method getAllUserFromUserRepository");
         return userRepository.findAll();
     }
 
 
 
-    //выполнить проверку на юзера перед изменением
-    public User editUser(User user) {
+    //выполняется проверка на юзера перед изменением. Если такой есть- меняется
+    //если нет- ошибка
+    public Shelter_user editUser(long id,Shelter_user shelterUser) {
         logger.info("start method editUser");
-        return userRepository.save(user);
+        Shelter_user userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        Optional.ofNullable(shelterUser.getFull_name()).ifPresent(userCheck::setFull_name);
+        Optional.ofNullable(shelterUser.getPhone_number()).ifPresent(userCheck::setPhone_number);
+        return userRepository.save(shelterUser);
 
     }
 
     public void deleteUserById(long id) {
         logger.info("start method deleteUserById");
-        userRepository.deleteById(id);
+        Shelter_user userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        userRepository.delete(userCheck);
     }
 
 
