@@ -23,8 +23,8 @@ CREATE TABLE request (
 --liquibase formatted sql
 
 --changeset markovka77:3
-CREATE TABLE shelter_user (
-    id BIGSERIAL,
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
     full_name VARCHAR,
     phone_number varchar
 );

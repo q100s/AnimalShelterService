@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.UserNotFoundException;
-import pro.sky.animalizer.model.Shelter_user;
+import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.repositories.UserRepository;
 
 import java.util.List;
@@ -19,40 +19,36 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Shelter_user createUser(Shelter_user shelterUser) {
+    public User createUser(User shelterUser) {
         logger.info("start method createUser");
         logger.info("User created");
         return userRepository.save(shelterUser);
     }
 
-    public Shelter_user findUserById(long id) {
+    public User findUserById(long id) {
         logger.info("start method findUserById");
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public List<Shelter_user> getAllUsers() {
+    public List<User> getAllUsers() {
         logger.info("start method getAllUserFromUserRepository");
         return userRepository.findAll();
     }
 
-
-
     //выполняется проверка на юзера перед изменением. Если такой есть- меняется
     //если нет- ошибка
-    public Shelter_user editUser(long id,Shelter_user shelterUser) {
+    public User editUser(long id, User shelterUser) {
         logger.info("start method editUser");
-        Shelter_user userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        Optional.ofNullable(shelterUser.getFull_name()).ifPresent(userCheck::setFull_name);
-        Optional.ofNullable(shelterUser.getPhone_number()).ifPresent(userCheck::setPhone_number);
+        User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        Optional.ofNullable(shelterUser.getFullName()).ifPresent(userCheck::setFullName);
+        Optional.ofNullable(shelterUser.getPhoneNumber()).ifPresent(userCheck::setPhoneNumber);
         return userRepository.save(shelterUser);
 
     }
 
     public void deleteUserById(long id) {
         logger.info("start method deleteUserById");
-        Shelter_user userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.delete(userCheck);
     }
-
-
 }
