@@ -13,9 +13,16 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.animalizer.model.Request;
+import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.repositories.RequestRepository;
+import pro.sky.animalizer.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Класс, уведомляемый о событии. <br>
@@ -24,10 +31,14 @@ import java.util.List;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
+    private final UserService userService;
+    private final RequestRepository requestRepository;
     private final TelegramBot telegramBot;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot) {
+    public TelegramBotUpdatesListener(UserService userService, RequestRepository requestRepository, TelegramBot telegramBot) {
+        this.userService = userService;
+        this.requestRepository = requestRepository;
         this.telegramBot = telegramBot;
     }
 
@@ -41,8 +52,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         try {
             updates.forEach(update -> {
                 Message message = update.message();
+                LocalDateTime dateTime = LocalDateTime.now(); // получаем текущую дату
                 String text;
                 Long chatId;
+                String fullName= null;
+                String phoneNumber= null;
                 logger.info("Processing update: {}", update);
                 if (update.message() != null) {
                     text = message.text();
@@ -54,7 +68,31 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     return;
                 }
                 if ("/start".equalsIgnoreCase(text)) {
-                    getMenuWithShelterPicking(chatId);
+
+                    /*Выполняется проверка предыдущих обращений пользователя к боту.
+                    Первый визит (еще нет chatId в таблице БД Request)- регистрация пользователя
+                    в таблице Users по никнейму телеграм и номер телефона,если не скрыт
+                    (иначе номер телефона "00000000000").
+
+                    ЕЩЕ РАЗ НАЖИМАЕШЬ /start
+
+                    Повторный визит(есть chatId в таблице БД Request) - кнопки с выбором приюта.
+
+                     */
+                     if(requestRepository.findAllRequestsByChatId(chatId).stream()
+                             .map(Request::getChatId).collect(Collectors.toCollection(ArrayList::new)).contains(chatId)){
+
+                         getMenuWithShelterPicking(chatId);
+                     }else {
+                         fullName = update.message().chat().username();
+                         if(update.message().contact()==null){
+                             phoneNumber = "00000000000";
+                         }else{
+                             phoneNumber = update.message().contact().phoneNumber();
+                         }
+                         requestRepository.save(new Request (chatId,dateTime,message.toString()));
+                         userService.createUser(new User(fullName,phoneNumber));
+                     }
                 }
                 createClickOnShelterPickingButton(update);
             });
@@ -95,7 +133,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     /**
-     * Метод, обрабатывающий резултаты нажатия на кнопки меню выбора приюта. <br>
+     * Метод, обрабатывающий результаты нажатия на кнопки меню выбора приюта. <br>
      * #{@link TelegramBotUpdatesListener#getMenuAfterCatsShelterPicking(Long)} <br>
      * #{@link TelegramBotUpdatesListener#getMenuAfterDogsShelterPicking(Long)} <br>
      * #{@link TelegramBotUpdatesListener#createClickOnShelterMenu(Update)} <br>
@@ -183,6 +221,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.error("Error during sending message: {}", sendResponse.description());
         }
     }
+
+
+
 
     /**
      * Метод, обрабатывающий резултаты нажатия на кнопки внутри меню приютов. <br>

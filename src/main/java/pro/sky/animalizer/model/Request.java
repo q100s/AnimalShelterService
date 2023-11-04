@@ -22,6 +22,12 @@ public class Request {
 
     private String requestText;  // текст обращения - с сутью обращения
 
+    public Request(Long chatId, LocalDateTime requestTime, String requestText) {
+        this.chatId = chatId;
+        this.requestTime = requestTime;
+        this.requestText = requestText;
+    }
+
     public Request() {
     }
 

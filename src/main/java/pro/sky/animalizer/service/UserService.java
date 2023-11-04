@@ -9,7 +9,9 @@ import pro.sky.animalizer.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Класс-сервис с бизнес-логикой по работе с пользователями.
+ */
 @Service
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -35,8 +37,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    //выполняется проверка на юзера перед изменением. Если такой есть- меняется
-    //если нет- ошибка
+    /**выполняется проверка на наличие юзера в БД перед изменением. Если такой есть- меняется
+        *если нет- ошибка
+        */
     public User editUser(long id, User shelterUser) {
         logger.info("start method editUser");
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);

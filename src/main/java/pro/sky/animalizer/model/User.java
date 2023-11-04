@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * Класс-модель, описывающая User.
+ * Класс-модель, описывающая пользователя.
  */
 @Entity
 @Table(name = "users")
@@ -18,8 +18,8 @@ public class User {
     public User() {
     }
 
-    public User(long id, String fullName, String phoneNumber) {
-        this.id = id;
+    public User( String fullName, String phoneNumber) {
+
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
     }
