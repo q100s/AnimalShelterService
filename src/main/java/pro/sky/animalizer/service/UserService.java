@@ -29,6 +29,10 @@ public class UserService {
         logger.info("start method findUserById");
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
+    public User findUserByTelegramId(long telegramId) {
+        logger.info("start method findUserByTelegramId");
+        return userRepository.findUserByTelegramId(telegramId);
+    }
 
     public List<User> getAllUsers() {
         logger.info("start method getAllUserFromUserRepository");
