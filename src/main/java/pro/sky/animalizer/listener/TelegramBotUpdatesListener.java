@@ -15,11 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
 import pro.sky.animalizer.model.Shelter;
-import pro.sky.animalizer.repositories.ShelterRepository;
-import pro.sky.animalizer.repositories.UserRepository;
+import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.service.ShelterService;
+import pro.sky.animalizer.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Класс, уведомляемый о событии. <br>
@@ -28,15 +31,16 @@ import java.util.List;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
+    private final Pattern pattern = Pattern.compile("(^[А-я]+)\\s+(\\d{11})");
     private final TelegramBot telegramBot;
-    private final UserRepository userRepository;
-    private final ShelterRepository shelterRepository;
+    private final UserService userService;
+    private final ShelterService shelterService;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, UserRepository userRepository, ShelterRepository shelterRepository) {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, UserService userService, ShelterService shelterService) {
         this.telegramBot = telegramBot;
-        this.userRepository = userRepository;
-        this.shelterRepository = shelterRepository;
+        this.userService = userService;
+        this.shelterService = shelterService;
     }
 
     @PostConstruct
@@ -68,7 +72,18 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         String userName = update.message().from().username();
         long telegramId = update.message().from().id();
         if ("/start".equalsIgnoreCase(text)) {
+            telegramBot.execute(new SendMessage(chatId, "Hello, " + firstName + "! Greetings in animal shelter bot menu!"));
             getMenuWithShelterPicking(chatId);
+//            User user = userService.findByTelegramId(telegramId);
+//            if (user == null) {
+//                telegramBot.execute(new SendMessage(chatId, "Hello, " + firstName + "! Greetings in animal shelter bot menu!"));
+//                User newUser = new User(telegramId, userName);
+//                userService.createUser(newUser);
+//                getMenuWithShelterPicking(chatId);
+//            } else {
+//                telegramBot.execute(new SendMessage(chatId, "Nice to see you again, " + firstName));
+//                getMenuWithShelterPicking(chatId);
+//            }
         }
     }
 
@@ -80,10 +95,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         if (callbackQuery != null) {
             long chatId = callbackQuery.message().chat().id();
             String data = callbackQuery.data();
-            Shelter catsShelter = shelterRepository.findAll().stream()
+            Shelter catsShelter = shelterService.getAllShelters().stream()
                     .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
                     .orElseThrow(ShelterNotFoundException::new);
-            Shelter dogsShelter = shelterRepository.findAll().stream()
+            Shelter dogsShelter = shelterService.getAllShelters().stream()
                     .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
                     .orElseThrow(ShelterNotFoundException::new);
             switch (data) {
@@ -136,7 +151,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), dogsShelter.getSafetyMeasures()));
                     break;
                 case "get personal info":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "введите данные в формте..."));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "заглушка"));
                     break;
                 case "cat adoption info":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "CatAdoptionInfo"));
@@ -163,7 +178,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     private void getMenuWithShelterPicking(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Hello! Pick, please, the shelter!");
+                new SendMessage(chatId, "Pick, please, the shelter!");
         sendMessage.replyMarkup(createMenuWithShelterPicking());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -305,4 +320,27 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 new InlineKeyboardButton("Call the volunteer").callbackData("volunteer calling"));
         return inlineKeyboardMarkup;
     }
+//    private void updateUser(Update update) {
+//        Message message = update.message();
+//        long chatId = message.chat().id();
+//        telegramBot.execute(new SendMessage(chatId, "You should send your name and phone number with country code (without plus)"));
+//        String text = update.message().text();
+//        long telegramId = message.from().id();
+//        String telegramNick = message.from().username();
+//        String fullName;
+//        String phoneNumber;
+//        if (text != null) {
+//            Matcher matcher = pattern.matcher(text);
+//            if (matcher.find()) {
+//                fullName = matcher.group(1);
+//                phoneNumber = matcher.group(2);
+//                User user = new User(telegramId, telegramNick, fullName, phoneNumber);
+//                userService.createUser(user);
+//                telegramBot.execute(new SendMessage(chatId, "Your personal information has been saved"));
+//                getMenuWithShelterPicking(chatId);
+//            } else {
+//                telegramBot.execute(new SendMessage(chatId, "Incorrect output"));
+//            }
+//        }
+//    }
 }

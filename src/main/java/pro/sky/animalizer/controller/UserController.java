@@ -65,9 +65,9 @@ public class UserController {
         return userService.findUserById(id);
     }
 
-    @GetMapping("/{telegramId}")
+    @GetMapping("/telegram/{telegramId}")
     public User findByTelegramId(@PathVariable long telegramId) {
-        return userService.findUserByTelegramId(telegramId);
+        return userService.findByTelegramId(telegramId);
     }
 
     @Operation(
