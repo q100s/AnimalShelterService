@@ -25,6 +25,9 @@ CREATE TABLE request (
 --changeset markovka77:3
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
+    telegram_id BIGINT,
+    telegram_nick VARCHAR,
     full_name VARCHAR,
-    phone_number varchar
+    phone_number VARCHAR,
+    car_number VARCHAR
 );

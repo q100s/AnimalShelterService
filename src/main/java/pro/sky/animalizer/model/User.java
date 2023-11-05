@@ -12,16 +12,43 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private long telegramId;
+    private String telegramNick;
     private String fullName;
     private String phoneNumber;
+    private String carNumber;
 
     public User() {
     }
 
-    public User( String fullName, String phoneNumber) {
-
+    /**
+     * Конструктор для пользователя с автомобилем
+     */
+    public User(long telegramId, String telegramNick, String fullName, String phoneNumber, String carNumber) {
+        this.telegramId = telegramId;
+        this.telegramNick = telegramNick;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
+        this.carNumber = carNumber;
+    }
+
+    /**
+     * Конструктор для пользователя без автомобиля
+     */
+    public User(long telegramId, String telegramNick, String fullName, String phoneNumber) {
+        this.telegramId = telegramId;
+        this.telegramNick = telegramNick;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * Конструктор для пользователя, созданный по
+     * идентификатору и никнейму telegram
+     */
+    public User(long telegramId, String telegramNick) {
+        this.telegramId = telegramId;
+        this.telegramNick = telegramNick;
     }
 
     public long getId() {
@@ -30,6 +57,22 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getTelegramId() {
+        return telegramId;
+    }
+
+    public void setTelegramId(long telegramId) {
+        this.telegramId = telegramId;
+    }
+
+    public String getTelegramNick() {
+        return telegramNick;
+    }
+
+    public void setTelegramNick(String telegramNick) {
+        this.telegramNick = telegramNick;
     }
 
     public String getFullName() {
@@ -48,26 +91,38 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getCarNumber() {
+        return carNumber;
+    }
+
+    public void setCarNumber(String carNumber) {
+        this.carNumber = carNumber;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User that = (User) o;
-        return id == that.id && Objects.equals(fullName, that.fullName) && Objects.equals(phoneNumber, that.phoneNumber);
+        User user = (User) o;
+        return id == user.id && telegramId == user.telegramId && Objects.equals(telegramNick, user.telegramNick)
+                && Objects.equals(fullName, user.fullName) && Objects.equals(phoneNumber, user.phoneNumber)
+                && Objects.equals(carNumber, user.carNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fullName, phoneNumber);
+        return Objects.hash(id, telegramId, telegramNick, fullName, phoneNumber, carNumber);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", telegramId=" + telegramId +
+                ", telegramNick='" + telegramNick + '\'' +
                 ", fullName='" + fullName + '\'' +
-                ", phoneNumber=" + phoneNumber +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", carNumber='" + carNumber + '\'' +
                 '}';
     }
 }

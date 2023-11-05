@@ -55,8 +55,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 LocalDateTime dateTime = LocalDateTime.now(); // получаем текущую дату
                 String text;
                 Long chatId;
-                String fullName= null;
-                String phoneNumber= null;
+                String fullName = null;
+                String phoneNumber = null;
                 logger.info("Processing update: {}", update);
                 if (update.message() != null) {
                     text = message.text();
@@ -91,7 +91,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                              phoneNumber = update.message().contact().phoneNumber();
                          }
                          requestRepository.save(new Request (chatId,dateTime,message.toString()));
-                         userService.createUser(new User(fullName,phoneNumber));
+//                         userService.createUser(new User(fullName,phoneNumber));
                      }
                 }
                 createClickOnShelterPickingButton(update);

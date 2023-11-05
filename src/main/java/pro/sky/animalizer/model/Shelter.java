@@ -24,8 +24,7 @@ public class Shelter {
     public Shelter() {
     }
 
-    public Shelter(Long id, String address, String securityPhoneNumber, String schedule, String safetyMeasures, String directionPathFile, String shelterType) {
-        this.id = id;
+    public Shelter(String address, String securityPhoneNumber, String schedule, String safetyMeasures, String directionPathFile, String shelterType) {
         this.address = address;
         this.securityPhoneNumber = securityPhoneNumber;
         this.schedule = schedule;
