@@ -21,26 +21,6 @@ public class User {
     public User() {
     }
 
-    /**
-     * Конструктор для пользователя с автомобилем
-     */
-    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber, String carNumber) {
-        this.telegramId = telegramId;
-        this.telegramNick = telegramNick;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.carNumber = carNumber;
-    }
-
-    /**
-     * Конструктор для пользователя без автомобиля
-     */
-    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber) {
-        this.telegramId = telegramId;
-        this.telegramNick = telegramNick;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-    }
 
     /**
      * Конструктор для пользователя, созданный по
@@ -51,7 +31,14 @@ public class User {
         this.telegramNick = telegramNick;
     }
 
-    public long getId() {
+    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber) {
+        this.telegramId = telegramId;
+        this.telegramNick = telegramNick;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Long getId() {
         return id;
     }
 

@@ -33,7 +33,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public User findByTelegramId(Long telegramId) {
+    public User findUserByTelegramId(Long telegramId) {
         logger.info("start method findUserByTelegramId");
         return userRepository.findByTelegramId(telegramId);
     }
