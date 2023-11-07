@@ -31,3 +31,11 @@ CREATE TABLE users (
     phone_number VARCHAR,
     car_number VARCHAR
 );
+--liquibase formatted sql
+
+--changeset markovka77:4
+CREATE TABLE reports(
+    id BIGSERIAL PRIMARY KEY,
+    photo_path VARCHAR,
+    text VARCHAR
+);

@@ -8,14 +8,17 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.Request;
-import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.repositories.RequestRepository;
+import pro.sky.animalizer.service.ReportService;
 import pro.sky.animalizer.service.UserService;
 
 import javax.annotation.PostConstruct;
@@ -32,12 +35,14 @@ import java.util.stream.Collectors;
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
     private final UserService userService;
+    private final ReportService reportService;
     private final RequestRepository requestRepository;
     private final TelegramBot telegramBot;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public TelegramBotUpdatesListener(UserService userService, RequestRepository requestRepository, TelegramBot telegramBot) {
+    public TelegramBotUpdatesListener(UserService userService, ReportService reportService, RequestRepository requestRepository, TelegramBot telegramBot) {
         this.userService = userService;
+        this.reportService = reportService;
         this.requestRepository = requestRepository;
         this.telegramBot = telegramBot;
     }
@@ -244,12 +249,27 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "DogAdoptionInfo"));
                     break;
                 case "report sending":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Report taker"));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "send photo and text"));
+                    reportWriter(update);
                     break;
                 case "volunteer calling":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Volunteer caller"));
                     break;
             }
+        }
+    }
+
+
+    private void reportWriter(Update update){
+        logger.info("started writeReport method");
+        if(update.message()!=null&&update.message().photo().length>0){
+            Report report = new Report();
+            report.setText(update.message().text());
+            GetFileResponse fileResponse = telegramBot.execute(new GetFile(update.message().photo()[0].fileId()));
+            report.setPhotoPath(telegramBot.getFullFilePath(fileResponse.file())) ;
+            reportService.createReport(report);
+        }else {
+            telegramBot.execute(new SendMessage(chatId," Ну? присылай давай!"));
         }
     }
 }
