@@ -20,7 +20,6 @@ public class RequestServiceTest {
         Long requestChatId = 111L;
         String requestText = "Test - Request with chatId =  111";
         request.setChatId(requestChatId);
-        request.setRequestTime(now());
         request.setRequestText(requestText);
         Request savedRequest = requestService.saveRequest(request);
         Assertions.assertThat(savedRequest).isNotNull();
@@ -35,7 +34,6 @@ public class RequestServiceTest {
         Long requestChatId = 111L;
         String requestText = "Test - Request with chatId =  111";
         request.setChatId(requestChatId);
-        request.setRequestTime(now());
         request.setRequestText(requestText);
         requestService.saveRequest(request);
 
@@ -49,7 +47,6 @@ public class RequestServiceTest {
         Long requestChatId = 111L;
         String requestText = "Test - Request with chatId =  111";
         request.setChatId(requestChatId);
-        request.setRequestTime(now());
         request.setRequestText(requestText);
         requestService.saveRequest(request);
 
@@ -63,7 +60,6 @@ public class RequestServiceTest {
         Long requestChatId = 111L;
         String requestText = "Test - Request with chatId =  111";
         request.setChatId(requestChatId);
-        request.setRequestTime(now());
         request.setRequestText(requestText);
         requestService.saveRequest(request);
 

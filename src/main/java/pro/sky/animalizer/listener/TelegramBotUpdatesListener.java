@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
-import pro.sky.animalizer.model.Shelter;
 import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.service.ShelterService;
 import pro.sky.animalizer.service.UserService;
@@ -43,7 +42,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.userService = userService;
         this.shelterService = shelterService;
     }
-
 
     @PostConstruct
     public void init() {
@@ -99,12 +97,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         if (callbackQuery != null) {
             long chatId = callbackQuery.message().chat().id();
             String data = callbackQuery.data();
-            Shelter catsShelter = shelterService.getAllShelters().stream()
-                    .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
-                    .orElseThrow(ShelterNotFoundException::new);
-            Shelter dogsShelter = shelterService.getAllShelters().stream()
-                    .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
-                    .orElseThrow(ShelterNotFoundException::new);
             switch (data) {
                 case "cat's shelter":
                     getMenuAfterCatsShelterPicking(chatId);
@@ -125,34 +117,64 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Some dog's info"));
                     break;
                 case "cat's shelter schedule":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), catsShelter.getSchedule()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getSchedule()));
                     break;
                 case "dog's shelter schedule":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), dogsShelter.getSchedule()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getSchedule()));
                     break;
                 case "cat's shelter address":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), catsShelter.getAddress()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getAddress()));
                     break;
                 case "dog's shelter address":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), dogsShelter.getAddress()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getAddress()));
                     break;
                 case "cat's direction path":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), catsShelter.getDirectionPathFile()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getDirectionPathFile()));
                     break;
                 case "dog's direction path":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), dogsShelter.getDirectionPathFile()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getDirectionPathFile()));
                     break;
                 case "cat's security contact":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), catsShelter.getSecurityPhoneNumber()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getSecurityPhoneNumber()));
                     break;
                 case "dog's security contact":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), dogsShelter.getSecurityPhoneNumber()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getSecurityPhoneNumber()));
                     break;
                 case "cat's safety measures":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), catsShelter.getSafetyMeasures()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("cat")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getSafetyMeasures()));
                     break;
                 case "dog's safety measures":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), dogsShelter.getSafetyMeasures()));
+                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
+                            shelterService.getAllShelters().stream()
+                                    .filter(shelter -> shelter.getShelterType().equals("dog")).findFirst()
+                                    .orElseThrow(ShelterNotFoundException::new).getSafetyMeasures()));
                     break;
                 case "get personal info":
                     telegramBot.execute(
@@ -160,11 +182,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                     "Напишите через пробел свое имя, фамилию и номер телефона с кодом страны (без плюса)")
                     );
                     break;
-                case "cat adoption info":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "CatAdoptionInfo"));
+                case "усыновление кошки":
+                    getMenuWithCatsAdoptionInfo(chatId);
                     break;
-                case "dog adoption info":
-                    telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "DogAdoptionInfo"));
+                case "усыновление собаки":
+                    getMenuWithDogsAdoptionInfo(chatId);
                     break;
                 case "report sending":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Report taker"));
@@ -234,7 +256,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Информация о приюте").callbackData("cat's shelter info"),
-                new InlineKeyboardButton("Как усыновить кошку").callbackData("cat adoption info"));
+                new InlineKeyboardButton("Как усыновить кошку").callbackData("усыновление кошки"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Отправить отчет о питомце").callbackData("report sending"),
                 new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer calling"));
@@ -268,7 +290,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Информация о приюте").callbackData("dog's shelter info"),
-                new InlineKeyboardButton("Как усыновить собаку").callbackData("dog adoption info"));
+                new InlineKeyboardButton("Как усыновить собаку").callbackData("усыновление собаки"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Отправить отчет о питомце").callbackData("report sending"),
                 new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer calling"));
@@ -328,6 +350,92 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 new InlineKeyboardButton("Передать контактные данные").callbackData("get personal info"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Техника безопасности на территории приюта").callbackData("cat's safety measures"));
+        return inlineKeyboardMarkup;
+    }
+
+    private void getMenuWithDogsAdoptionInfo(Long chatId) {
+        SendMessage sendMessage =
+                new SendMessage(chatId, "Ниже представлены рекомендации по усыновлению собаки: ");
+        sendMessage.replyMarkup(createMenuWithDogsAdoptionInfo());
+        SendResponse sendResponse = telegramBot.execute(sendMessage);
+        if (!sendResponse.isOk()) {
+            logger.error("Error during sending message: {}", sendResponse.description());
+        }
+    }
+
+    private InlineKeyboardMarkup createMenuWithDogsAdoptionInfo() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Правила знакомства с собакой до усыновления")
+                        .callbackData("правила знакомства с собакой"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Список документов, необходимых для усыновления собаки")
+                        .callbackData("документы для усыновления собаки"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Рекомендации по транспортировке собаки")
+                        .callbackData("транспортировка собаки"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Рекомендации по обустройству дома для щенка")
+                        .callbackData("обустройство дома для щенка"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Рекомендации по обустройству дома для взрослой собаки")
+                        .callbackData("обустройство дома для взрослой собаки"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Рекомендации по обустройству дома для собаки с ограниченными возможностями")
+                        .callbackData("обустройство дома для собаки с ограниченными возможностями"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Советы кинолога по первичному общению с собакой")
+                        .callbackData("первичное общение с собакой"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Список проверенных кинологов")
+                        .callbackData("проверенные кинологи"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Список причин для отказа в усыновлении собаки")
+                        .callbackData("причины отказа в усыновлении собаки"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Передать контактные данные").callbackData("get personal info"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer calling"));
+        return inlineKeyboardMarkup;
+    }
+
+    private void getMenuWithCatsAdoptionInfo(Long chatId) {
+        SendMessage sendMessage =
+                new SendMessage(chatId, "Ниже представлены рекомендации по усыновлению кошки: ");
+        sendMessage.replyMarkup(createMenuWithCatsAdoption());
+        SendResponse sendResponse = telegramBot.execute(sendMessage);
+        if (!sendResponse.isOk()) {
+            logger.error("Error during sending message: {}", sendResponse.description());
+        }
+    }
+
+    private InlineKeyboardMarkup createMenuWithCatsAdoption() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Правила знакомства с кошкой до усыновления")
+                        .callbackData("правила знакомства с кошкой"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Список документов, необходимых для усыновления кошки")
+                        .callbackData("документы для усыновления кошки"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Рекомендации по транспортировке кошки")
+                        .callbackData("транспортировка кошки"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Рекомендации по обустройству дома для котенка")
+                        .callbackData("обустройство дома для котенка"));
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton("Рекомендации по обустройству дома для взрослой кошки")
+//                        .callbackData("обустройство дома для взрослой кошки"));
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton("Рекомендации по обустройству дома для кошки с ограниченными возможностями")
+//                        .callbackData("обустройство дома для кошки с ограниченными возможностями"));
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton("Список причин для отказа в усыновлении кошки")
+//                        .callbackData("причины отказа в усыновлении кошки"));
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton("Передать контактные данные").callbackData("get personal info"));
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer calling"));
         return inlineKeyboardMarkup;
     }
 
