@@ -18,8 +18,7 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;  // уникальный id обращения
     private Long chatId; // id телеграмм чата
-    private LocalDateTime requestTime;  // дата и время обращения
-
+    private Long telegramId; // id телеграм пользователя
     private String requestText;  // текст обращения - с сутью обращения
 
     public Request() {
@@ -41,13 +40,14 @@ public class Request {
         this.chatId = chatId;
     }
 
-    public LocalDateTime getRequestTime() {
-        return requestTime;
+    public Long getTelegramId() {
+        return telegramId;
     }
 
-    public void setRequestTime(LocalDateTime requestTime) {
-        this.requestTime = requestTime;
+    public void setTelegramId(Long telegramId) {
+        this.telegramId = telegramId;
     }
+
 
     public String getRequestText() {
         return requestText;
@@ -60,14 +60,16 @@ public class Request {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Request)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Request request = (Request) o;
-        return Objects.equals(getId(), request.getId());
+        return Objects.equals(id, request.id) && Objects.equals(chatId, request.chatId)
+                && Objects.equals(telegramId, request.telegramId)
+                && Objects.equals(requestText, request.requestText);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id, chatId, telegramId, requestText);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class Request {
         return "Request{" +
                 "id=" + id +
                 ", chatId=" + chatId +
-                ", requestTime=" + requestTime +
+                ", telegramId=" + telegramId +
                 ", requestText='" + requestText + '\'' +
                 '}';
     }

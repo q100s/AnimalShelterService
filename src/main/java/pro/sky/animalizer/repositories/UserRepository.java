@@ -10,6 +10,6 @@ import pro.sky.animalizer.model.User;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT users FROM users WHERE users.telegram_id = :telegramId", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE users.telegram_id = :telegramId", nativeQuery = true)
     User findByTelegramId(Long telegramId);
 }

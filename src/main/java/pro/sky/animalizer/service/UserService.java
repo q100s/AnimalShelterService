@@ -55,7 +55,7 @@ public class UserService {
         Optional.ofNullable(user.getCarNumber()).ifPresent(userCheck::setCarNumber);
         Optional.ofNullable(user.getTelegramId()).ifPresent(userCheck::setTelegramId);
         Optional.ofNullable(user.getTelegramNick()).ifPresent(userCheck::setTelegramNick);
-        return userRepository.save(user);
+        return userRepository.save(userCheck);
 
     }
 
