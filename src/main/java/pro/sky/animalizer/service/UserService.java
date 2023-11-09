@@ -60,4 +60,5 @@ public class UserService {
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.delete(userCheck);
     }
+
 }
