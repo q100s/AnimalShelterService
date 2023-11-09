@@ -66,13 +66,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.message() != null) {
                     text = message.text();
                     chatId = message.chat().id();
-                } else if (update.callbackQuery() != null) {
+
+                }else if (update.callbackQuery() != null) {
                     text = update.callbackQuery().data();
                     chatId = update.callbackQuery().message().chat().id();
                 } else {
                     return;
-                }
-                if ("/start".equalsIgnoreCase(text)) {
+
+                }if ("/start".equalsIgnoreCase(text)) {
 
                     /*Выполняется проверка предыдущих обращений пользователя к боту.
                     Первый визит (еще нет chatId в таблице БД Request)- регистрация пользователя
@@ -98,8 +99,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                          requestRepository.save(new Request (chatId,dateTime,message.toString()));
 //                         userService.createUser(new User(fullName,phoneNumber));
                      }
+
+                }else {
+                    createClickOnShelterPickingButton(update);
                 }
-                createClickOnShelterPickingButton(update);
             });
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -250,7 +253,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     break;
                 case "report sending":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "send photo and text"));
-                    reportWriter(update);
                     break;
                 case "volunteer calling":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(), "Volunteer caller"));
@@ -269,6 +271,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             report.setPhotoPath(telegramBot.getFullFilePath(fileResponse.file())) ;
             reportService.createReport(report);
         }else {
+            long chatId = update.message().chat().id();
             telegramBot.execute(new SendMessage(chatId," Ну? присылай давай!"));
         }
     }
