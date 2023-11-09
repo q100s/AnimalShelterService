@@ -10,8 +10,8 @@ import java.util.Objects;
 public class Pet {
     private Long id;
     private String petType;
-    private String petBreed;
-    private User petOwner;
+    private String petName;
+
 
 
 
@@ -37,27 +37,23 @@ public class User {
         this.petType = petType;
     }
 
-    public String getPetBreed() {
-        return petBreed;
+    public String getpetName() {
+        return petName;
     }
 
-    public void setPetBreed(String petBreed) {
-        this.petBreed = petBreed;
+    public void setpetName(String petName) {
+        this.petName = petName;
     }
 
-    public User getPetOwner() {
-        return petOwner;
-    }
 
-    public void setPetOwner(User petOwner) {
-        this.petOwner = petOwner;
-    }
 
-    public Pet(Long id, String petType, String petBreed, User petOwner) {
+
+
+    public Pet(Long id, String petType, String petName) {
         this.id = id;
         this.petType = petType;
-        this.petBreed = petBreed;
-        this.petOwner = petOwner;
+        this.petName = petName;
+
     }
 
     @Override
@@ -65,12 +61,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(petType, pet.petType) && Objects.equals(petBreed, pet.petBreed) && Objects.equals(petOwner, pet.petOwner);
+        return Objects.equals(id, pet.id) && Objects.equals(petType, pet.petType) && Objects.equals(petName, pet.petName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, petType, petBreed, petOwner);
+        return Objects.hash(id, petType, petName);
     }
 
     @Override
@@ -78,8 +74,7 @@ public class User {
         return "Pet{" +
                 "id=" + id +
                 ", petType='" + petType + '\'' +
-                ", petBreed='" + petBreed + '\'' +
-                ", petOwner='" + petOwner + '\'' +
+                ", petName='" + petName + '\'' +
                 '}';
     }
 }
