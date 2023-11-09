@@ -50,6 +50,7 @@ public class UserService {
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         Optional.ofNullable(shelterUser.getFullName()).ifPresent(userCheck::setFullName);
         Optional.ofNullable(shelterUser.getPhoneNumber()).ifPresent(userCheck::setPhoneNumber);
+        logger.info("method editUser is finished");
         return userRepository.save(shelterUser);
 
     }
