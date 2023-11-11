@@ -46,7 +46,8 @@ public class User {
     }
 
 
-
+    public Pet() {
+    }
 
 
     public Pet(Long id, String petType, String petName) {
@@ -55,6 +56,7 @@ public class User {
         this.petName = petName;
 
     }
+
 
     @Override
     public boolean equals(Object o) {

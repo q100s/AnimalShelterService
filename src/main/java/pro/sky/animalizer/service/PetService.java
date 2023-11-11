@@ -45,8 +45,6 @@ public class PetService {
         logger.error("There is no pet with id: " + petId);
         Pet editedPet = petRepository.findById(petId).orElseThrow(PetNotFoundException::new);
         Optional.ofNullable(pet.getPetType()).ifPresent(editedPet::setPetType);
-        Optional.ofNullable(pet.getPetBreed()).ifPresent(editedPet::setPetBreed);
-        Optional.ofNullable(pet.getPetOwner()).ifPresent(editedPet::setPetOwner);
         return petRepository.save(editedPet);
     }
 
