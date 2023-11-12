@@ -10,16 +10,16 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    String photoPath;
-    String text;
+    private long id;
+    private String photoPath;
+    private String text;
 
     public Report(String photoPath, String text) {
         this.photoPath = photoPath;
         this.text = text;
     }
 
-    public  Report(){
+    public Report() {
 
     }
 

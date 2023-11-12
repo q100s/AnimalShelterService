@@ -5,12 +5,15 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
+import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.User;
 
 /**
@@ -23,14 +26,17 @@ public class UserRequestService {
     private final TelegramBot telegramBot;
     private final ShelterService shelterService;
     private final UserService userService;
+    private final ReportService reportService;
 
     public UserRequestService(InlineKeyboardMarkupService inlineKeyboardMarkupService,
                               TelegramBot telegramBot,
-                              ShelterService shelterService, UserService userService) {
+                              ShelterService shelterService, UserService userService,
+                              ReportService reportService) {
         this.inlineKeyboardMarkupService = inlineKeyboardMarkupService;
         this.telegramBot = telegramBot;
         this.shelterService = shelterService;
         this.userService = userService;
+        this.reportService = reportService;
     }
 
     /**
@@ -156,14 +162,14 @@ public class UserRequestService {
 
     /**
      * Метод, обновляющий поля пользователя в базе данных.<br>
-     *
+     * <p>
      * #{@link UserService#findUserByTelegramId(Long)}<br>
      * #{@link UserService#editUser(Long, User)}<br>
      * #{@link UserService#createUser(User)}<br>
      * #{@link TelegramBot#execute(BaseRequest)}
      *
-     * @param update апдейт, приходящий из telegram чата с пользователем.
-     * @param fullName имя и фамилия пользователя (вычисляется из базы данных, либо передаётся пользователем).
+     * @param update      апдейт, приходящий из telegram чата с пользователем.
+     * @param fullName    имя и фамилия пользователя (вычисляется из базы данных, либо передаётся пользователем).
      * @param phoneNumber мобильный телефон пользователя (вычисляется из базы данных, либо передаётся пользователем).
      */
     public void updateUser(Update update, String fullName, String phoneNumber) {
@@ -181,6 +187,20 @@ public class UserRequestService {
             User newUser = new User(telegramId, telegramNick, fullName, phoneNumber);
             userService.createUser(newUser);
             telegramBot.execute(new SendMessage(chatId, newUser.toString()));
+        }
+    }
+
+    public void takeReportFromUser(Update update) {
+        logger.info("started writeReport method");
+        if (update.message() != null && update.message().photo().length > 0) {
+            Report report = new Report();
+            report.setText(update.message().text());
+            GetFileResponse fileResponse = telegramBot.execute(new GetFile(update.message().photo()[0].fileId()));
+            report.setPhotoPath(telegramBot.getFullFilePath(fileResponse.file()));
+            reportService.createReport(report);
+        } else {
+            long chatId = update.message().chat().id();
+            telegramBot.execute(new SendMessage(chatId, "Некорректный формат отчета"));
         }
     }
 

@@ -25,30 +25,30 @@ class UserServiceTest {
     private UserService userService;
 
 
-    User userTest = new User(0123, "NikolayNick", "Nikolay Nikolaev", "9150010101");
+    User userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
 
 
     @Test
     void createUser() {
-        User actual = userService.createUser(new User(0123, "NikolayNick", "Nikolay Nikolaev", "9150010101"));
+        User actual = userService.createUser(new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101"));
         Assertions.assertEquals(userRepositoryMock.save(userTest), actual);
 
     }
 
     @Test
     void findUserByIdWhenTheUserNotFound() {
-        userTest = new User(0123, "NikolayNick", "Nikolay Nikolaev", "9150010101");
-        userTest.setId(3);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUserById(2));
+        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
+        userTest.setId(3L);
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUserById(2L));
 
     }
 
     @Test
     void findUserByIdOk() {
-        userTest = new User(0123, "NikolayNick", "Nikolay Nikolaev", "9150010101");
-        userTest.setId(3);
+        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
+        userTest.setId(3L);
         when(userRepositoryMock.findById(3L)).thenReturn(Optional.ofNullable(userTest));
-        Assertions.assertEquals(userService.findUserById(3), userTest);
+        Assertions.assertEquals(userService.findUserById(3L), userTest);
 
     }
 
@@ -65,14 +65,14 @@ class UserServiceTest {
     void editUserWhichIsAbsentInBd() {
         User editedUser = new User();
         editedUser.setFullName("Ivan");
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.editUser(1, editedUser));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.editUser(1L, editedUser));
 
     }
 
     @Test
     void editUser() {
-        userTest = new User(067, "Ivan", "Ivan Ivanov", "000040404059");
-        userTest.setId(3);
+        userTest = new User(067L, "Ivan", "Ivan Ivanov", "000040404059");
+        userTest.setId(3L);
         Mockito.doReturn(Optional.ofNullable(userTest))
                 .when(userRepositoryMock).findById(3L);
         Assertions.assertEquals(Optional.of(userTest), userRepositoryMock.findById(3L));
@@ -81,11 +81,7 @@ class UserServiceTest {
 
     @Test
     void deleteUserByIdWhichIsAbsentInBD() {
-        userTest.setId(3);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.deleteUserById(3));
-    }
-
-    @Test
-    void deleteUserById() {
+        userTest.setId(3L);
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.deleteUserById(3L));
     }
 }

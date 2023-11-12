@@ -23,7 +23,6 @@ public class Request {
 
     public Request(Long chatId, LocalDateTime requestTime, String requestText) {
         this.chatId = chatId;
-        this.requestTime = requestTime;
         this.requestText = requestText;
     }
 

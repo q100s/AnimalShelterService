@@ -21,9 +21,6 @@ public class User {
     public User() {
     }
 
-     * Конструктор для пользователя, созданный по
-     * идентификатору и никнейму telegram
-     */
     public User(Long telegramId, String telegramNick) {
         this.telegramId = telegramId;
         this.telegramNick = telegramNick;
