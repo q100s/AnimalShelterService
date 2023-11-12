@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +33,7 @@ class UserServiceTest {
     @Test
     void createUser() {
         User actual = userService.createUser(new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101"));
-        Assertions.assertEquals(userRepositoryMock.save(userTest), actual);
+        assertEquals(userRepositoryMock.save(userTest), actual);
 
     }
 
@@ -39,7 +41,7 @@ class UserServiceTest {
     void findUserByIdWhenTheUserNotFound() {
         userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
         userTest.setId(3L);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUserById(2L));
+        assertThrows(UserNotFoundException.class, () -> userService.findUserById(2L));
 
     }
 
@@ -48,7 +50,7 @@ class UserServiceTest {
         userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
         userTest.setId(3L);
         when(userRepositoryMock.findById(3L)).thenReturn(Optional.ofNullable(userTest));
-        Assertions.assertEquals(userService.findUserById(3L), userTest);
+        assertEquals(userService.findUserById(3L), userTest);
 
     }
 
@@ -57,7 +59,7 @@ class UserServiceTest {
     void getAllUsers() {
         List<User> listUsersTest = new ArrayList<>();
         when(userRepositoryMock.findAll()).thenReturn(listUsersTest);
-        Assertions.assertEquals(userService.getAllUsers(), listUsersTest);
+        assertEquals(userService.getAllUsers(), listUsersTest);
 
     }
 
@@ -65,7 +67,7 @@ class UserServiceTest {
     void editUserWhichIsAbsentInBd() {
         User editedUser = new User();
         editedUser.setFullName("Ivan");
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.editUser(1L, editedUser));
+        assertThrows(UserNotFoundException.class, () -> userService.editUser(1L, editedUser));
 
     }
 
@@ -75,13 +77,13 @@ class UserServiceTest {
         userTest.setId(3L);
         Mockito.doReturn(Optional.ofNullable(userTest))
                 .when(userRepositoryMock).findById(3L);
-        Assertions.assertEquals(Optional.of(userTest), userRepositoryMock.findById(3L));
+        assertEquals(Optional.of(userTest), userRepositoryMock.findById(3L));
 
     }
 
     @Test
     void deleteUserByIdWhichIsAbsentInBD() {
         userTest.setId(3L);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.deleteUserById(3L));
+        assertThrows(UserNotFoundException.class, () -> userService.deleteUserById(3L));
     }
 }
