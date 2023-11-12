@@ -13,10 +13,12 @@ import pro.sky.animalizer.service.PetService;
 
 import java.util.Collection;
 
-public class PetContoller { 
+@RestController
+@RequestMapping("/pet")
+public class PetController {
     private final PetService service;
 
-    public PetContoller(PetService service) {
+    public PetController(PetService service) {
         this.service = service;
     }
 

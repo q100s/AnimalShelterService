@@ -1,6 +1,9 @@
 package pro.sky.animalizer.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 /**
@@ -8,18 +11,14 @@ import java.util.Objects;
  */
 @Entity
 public class Pet {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String petType;
     private String petName;
 
-
-
-
-public class User {
-    /**
-     * заглушка
-     */
-}
+    public class User {
+    }
 
     public Long getId() {
         return id;
@@ -37,11 +36,11 @@ public class User {
         this.petType = petType;
     }
 
-    public String getpetName() {
+    public String getPetName() {
         return petName;
     }
 
-    public void setpetName(String petName) {
+    public void setPetName(String petName) {
         this.petName = petName;
     }
 
@@ -49,14 +48,12 @@ public class User {
     public Pet() {
     }
 
-
     public Pet(Long id, String petType, String petName) {
         this.id = id;
         this.petType = petType;
         this.petName = petName;
 
     }
-
 
     @Override
     public boolean equals(Object o) {

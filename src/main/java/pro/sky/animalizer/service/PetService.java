@@ -3,6 +3,7 @@ package pro.sky.animalizer.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.PetNotFoundException;
 import pro.sky.animalizer.model.Pet;
 import pro.sky.animalizer.repositories.PetRepository;
@@ -14,9 +15,9 @@ import java.util.Optional;
 /**
  * Класс-сервис с бизнес-логикой по работе с питомцами.
  */
+@Service
 public class PetService {
     private static final Logger logger = LoggerFactory.getLogger(PetService.class);
-    @Autowired
     private final PetRepository petRepository;
 
     public PetService(PetRepository petRepository) {

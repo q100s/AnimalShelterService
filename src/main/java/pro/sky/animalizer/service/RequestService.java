@@ -21,8 +21,7 @@ import static java.lang.Boolean.TRUE;
 public class RequestService {
     private static final Logger logger = LoggerFactory.getLogger(RequestService.class);
 
-    @Autowired
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
     public RequestService(RequestRepository requestRepository) {
         this.requestRepository = requestRepository;
