@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pro.sky.animalizer.model.Request;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 public class RequestServiceTest {
     @Autowired
@@ -31,20 +33,20 @@ public class RequestServiceTest {
     @Test
     public void testSaveRequest() {
         Request savedRequest = requestService.saveRequest(request);
-        Assertions.assertThat(savedRequest).isNotNull();
-        Assertions.assertThat(request.getRequestText()).isEqualTo(savedRequest.getRequestText());
+        assertThat(savedRequest).isNotNull();
+        assertThat(request.getRequestText()).isEqualTo(savedRequest.getRequestText());
     }
 
     @Test
     public void testGetAllRequests() {
         requestService.saveRequest(request);
-        Assertions.assertThat(requestService.getAllRequests()).isNotNull();
-        Assertions.assertThat(requestService.getAllRequests().size()).isEqualTo(1);
+        assertThat(requestService.getAllRequests()).isNotNull();
+        assertThat(requestService.getAllRequests().size()).isEqualTo(1);
     }
 
     @Test
     public void testGetAllRequestsByChatId() {
         requestService.saveRequest(request);
-        Assertions.assertThat(requestService.getAllRequestsByChatId(requestChatId)).isNotNull();
+        assertThat(requestService.getAllRequestsByChatId(requestChatId)).isNotNull();
     }
 }

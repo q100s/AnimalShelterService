@@ -324,7 +324,7 @@ public class UserRequestService {
                     break;
                 case "дома для щенка":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
-                            "дома для щенка"));
+                            "дом для щенка"));
                     break;
                 case "дом для взрослой собаки":
                     telegramBot.execute(new SendMessage(update.callbackQuery().from().id(),
