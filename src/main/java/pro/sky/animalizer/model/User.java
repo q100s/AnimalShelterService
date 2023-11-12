@@ -11,8 +11,8 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private long telegramId;
+    private Long id;
+    private Long telegramId;
     private String telegramNick;
     private String fullName;
     private String phoneNumber;
@@ -21,49 +21,32 @@ public class User {
     public User() {
     }
 
-    /**
-     * Конструктор для пользователя с автомобилем
-     */
-    public User(long telegramId, String telegramNick, String fullName, String phoneNumber, String carNumber) {
-        this.telegramId = telegramId;
-        this.telegramNick = telegramNick;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.carNumber = carNumber;
-    }
-
-    /**
-     * Конструктор для пользователя без автомобиля
-     */
-    public User(long telegramId, String telegramNick, String fullName, String phoneNumber) {
-        this.telegramId = telegramId;
-        this.telegramNick = telegramNick;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-    }
-
-    /**
      * Конструктор для пользователя, созданный по
      * идентификатору и никнейму telegram
      */
-    public User(long telegramId, String telegramNick) {
+    public User(Long telegramId, String telegramNick) {
         this.telegramId = telegramId;
         this.telegramNick = telegramNick;
     }
 
-    public long getId() {
+    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber) {
+        this.telegramId = telegramId;
+        this.telegramNick = telegramNick;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+    }
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
-
-    public long getTelegramId() {
+    public Long getTelegramId() {
         return telegramId;
     }
 
-    public void setTelegramId(long telegramId) {
+    public void setTelegramId(Long telegramId) {
         this.telegramId = telegramId;
     }
 
@@ -104,9 +87,9 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && telegramId == user.telegramId && Objects.equals(telegramNick, user.telegramNick)
-                && Objects.equals(fullName, user.fullName) && Objects.equals(phoneNumber, user.phoneNumber)
-                && Objects.equals(carNumber, user.carNumber);
+        return Objects.equals(id, user.id) && Objects.equals(telegramId, user.telegramId)
+                && Objects.equals(telegramNick, user.telegramNick) && Objects.equals(fullName, user.fullName)
+                && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(carNumber, user.carNumber);
     }
 
     @Override

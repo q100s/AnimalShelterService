@@ -9,6 +9,7 @@ import pro.sky.animalizer.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+
 /**
  * Класс-сервис с бизнес-логикой по работе с пользователями.
  */
@@ -21,20 +22,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(User shelterUser) {
+    public User createUser(User user) {
         logger.info("start method createUser");
         logger.info("User created");
-        return userRepository.save(shelterUser);
+        return userRepository.save(user);
     }
 
-    public User findUserById(long id) {
+    public User findUserById(Long id) {
         logger.info("start method findUserById");
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public User findUserByTelegramId(long telegramId) {
+    public User findUserByTelegramId(Long telegramId) {
         logger.info("start method findUserByTelegramId");
-        return userRepository.findUserByTelegramId(telegramId);
+        return userRepository.findByTelegramId(telegramId);
     }
 
     public List<User> getAllUsers() {
@@ -42,23 +43,20 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    /**выполняется проверка на наличие юзера в БД перед изменением. Если такой есть- меняется
-        *если нет- ошибка
-        */
-    public User editUser(long id, User shelterUser) {
+    public User editUser(Long id, User user) {
         logger.info("start method editUser");
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        Optional.ofNullable(shelterUser.getFullName()).ifPresent(userCheck::setFullName);
-        Optional.ofNullable(shelterUser.getPhoneNumber()).ifPresent(userCheck::setPhoneNumber);
-        logger.info("method editUser is finished");
-        return userRepository.save(shelterUser);
-
+        Optional.ofNullable(user.getFullName()).ifPresent(userCheck::setFullName);
+        Optional.ofNullable(user.getPhoneNumber()).ifPresent(userCheck::setPhoneNumber);
+        Optional.ofNullable(user.getCarNumber()).ifPresent(userCheck::setCarNumber);
+        Optional.ofNullable(user.getTelegramId()).ifPresent(userCheck::setTelegramId);
+        Optional.ofNullable(user.getTelegramNick()).ifPresent(userCheck::setTelegramNick);
+        return userRepository.save(userCheck);
     }
 
-    public void deleteUserById(long id) {
+    public void deleteUserById(Long id) {
         logger.info("start method deleteUserById");
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.delete(userCheck);
     }
-
 }

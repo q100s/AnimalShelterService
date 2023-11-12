@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -62,13 +65,37 @@ public class UserController {
                     )
             })
     @GetMapping("/{id}")
-    public User findUserById(@PathVariable long id) {
+    public User findUserById(@Parameter(description = "Идентификатор для поиска") @PathVariable long id) {
         return userService.findUserById(id);
     }
 
-    @GetMapping("/{telegramId}")
-    public User findByTelegramId(@PathVariable long telegramId) {
-        return userService.findUserByTelegramId(telegramId);
+    @Operation(
+            summary = "Поиск пользователя по telegram-идентификатору",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Пользователь, найденный по telegram-идентификатору",
+                            content = {@Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = User.class)
+                            )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Пользователя с переданным telegram-id не существует"
+                    )
+            })
+    @GetMapping("/by{telegramId}")
+    public ResponseEntity<User> findByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
+                                                     @PathVariable long telegramId) {
+        User userByTelegramId = userService.findUserByTelegramId(telegramId);
+        if (userByTelegramId == null) {
+            logger.error("There isn't a user with id = " + telegramId);
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok(userByTelegramId);
+        }
     }
 
     @Operation(
@@ -92,7 +119,7 @@ public class UserController {
                     )
             })
     @PostMapping
-    public User createUser(@RequestBody User shelterUser) {
+    public User createUser(@Parameter(description = "Добавляемый пользователь")@RequestBody User shelterUser) {
         return userService.createUser(shelterUser);
     }
 
@@ -122,7 +149,7 @@ public class UserController {
             })
     @PutMapping("/{id}")
     public ResponseEntity<User> editUser(@Parameter(description = "Идентификатор для поиска") @PathVariable long id,
-                                         @RequestBody User shelterUser) {
+                                         @Parameter(description = "Отредактированный пользователь") @RequestBody User shelterUser) {
         User shelterUserCheck = userService.editUser(id, shelterUser);
         if (shelterUserCheck == null) {
             return ResponseEntity.notFound().build();
