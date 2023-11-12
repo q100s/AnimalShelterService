@@ -43,10 +43,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    /**
-     * Выполняется проверка на наличие юзера в БД перед изменением. Если такой есть- меняется
-     *если нет- ошибка
-     */
     public User editUser(Long id, User user) {
         logger.info("start method editUser");
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
@@ -56,7 +52,6 @@ public class UserService {
         Optional.ofNullable(user.getTelegramId()).ifPresent(userCheck::setTelegramId);
         Optional.ofNullable(user.getTelegramNick()).ifPresent(userCheck::setTelegramNick);
         return userRepository.save(userCheck);
-
     }
 
     public void deleteUserById(Long id) {

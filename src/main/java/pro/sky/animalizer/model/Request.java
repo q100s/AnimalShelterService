@@ -21,6 +21,12 @@ public class Request {
     private Long telegramId; // id телеграм пользователя
     private String requestText;  // текст обращения - с сутью обращения
 
+    public Request(Long chatId, LocalDateTime requestTime, String requestText) {
+        this.chatId = chatId;
+        this.requestTime = requestTime;
+        this.requestText = requestText;
+    }
+
     public Request() {
     }
 

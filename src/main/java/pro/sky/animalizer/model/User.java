@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * Класс-модель, описывающая User.
+ * Класс-модель, описывающая пользователя.
  */
 @Entity
 @Table(name = "users")
@@ -21,7 +21,6 @@ public class User {
     public User() {
     }
 
-    /**
      * Конструктор для пользователя, созданный по
      * идентификатору и никнейму telegram
      */
@@ -36,7 +35,6 @@ public class User {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
     }
-
     public Long getId() {
         return id;
     }
@@ -44,7 +42,6 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
-
     public Long getTelegramId() {
         return telegramId;
     }

@@ -16,6 +16,8 @@ import pro.sky.animalizer.service.UserRequestService;
 import pro.sky.animalizer.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +29,6 @@ import java.util.regex.Pattern;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
-
     private final Pattern pattern = Pattern.compile("(^[А-я]+)\\s+([А-я]+)\\s+(\\d{11}$)");
     private final TelegramBot telegramBot;
     private final UserService userService;
@@ -88,6 +89,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String fullName = matcher.group(1) + " " + matcher.group(2);
             String phoneNumber = matcher.group(3);
             userRequestService.updateUser(update, fullName, phoneNumber);
+        }
+    }
+  
+    private void reportWriter(Update update){
+        logger.info("started writeReport method");
+        if(update.message()!=null&&update.message().photo().length>0){
+            Report report = new Report();
+            report.setText(update.message().text());
+            GetFileResponse fileResponse = telegramBot.execute(new GetFile(update.message().photo()[0].fileId()));
+            report.setPhotoPath(telegramBot.getFullFilePath(fileResponse.file())) ;
+            reportService.createReport(report);
+        } else {
+            long chatId = update.message().chat().id();
+            telegramBot.execute(new SendMessage(chatId," Ну? присылай давай!"));
         }
     }
 }
