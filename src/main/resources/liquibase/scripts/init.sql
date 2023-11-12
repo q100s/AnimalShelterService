@@ -14,9 +14,19 @@ CREATE TABLE shelter (
 
 -- changeset avolgin:2
 CREATE TABLE request (
-    id  BIGSERIAL,
+    id BIGSERIAL PRIMARY KEY,
     chat_id BIGINT,
-    request_time TIMESTAMP,
-    request_text VARCHAR,
-    PRIMARY KEY(id)
+    telegram_id BIGINT,
+    request_text VARCHAR
+);
+--liquibase formatted sql
+
+--changeset markovka77:3
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    telegram_id BIGINT,
+    telegram_nick VARCHAR,
+    full_name VARCHAR,
+    phone_number VARCHAR,
+    car_number VARCHAR
 );
