@@ -121,12 +121,12 @@ public class InlineKeyboardMarkupService {
                         .callbackData("dog's direction path"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Телефон охраны")
-                        .callbackData("cat's security contact"),
+                        .callbackData("dog's security contact"),
                 new InlineKeyboardButton("Позвать волонтера")
                         .callbackData("volunteer calling"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Техника безопасности на территории приюта")
-                        .callbackData("cat's safety measures"));
+                        .callbackData("dog's safety measures"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Передать контактные данные")
                         .callbackData("get personal info"));
@@ -152,7 +152,7 @@ public class InlineKeyboardMarkupService {
                         .callbackData("транспортировка собаки"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Как обустроить дом для щенка")
-                        .callbackData("дома для щенка"));
+                        .callbackData("дом для щенка"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Как обустроить дом для взрослой собаки")
                         .callbackData("дом для взрослой собаки"));
@@ -183,7 +183,7 @@ public class InlineKeyboardMarkupService {
     public InlineKeyboardMarkup createMenuWithCatsAdoptionInfo() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Правила знакомства с кошкой до усыновления")
+                new InlineKeyboardButton("Как знакомиться с кошкой до усыновления")
                         .callbackData("правила знакомства с кошкой"));
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Список документов, необходимых для усыновления кошки")

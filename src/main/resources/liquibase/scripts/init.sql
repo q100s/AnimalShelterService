@@ -33,8 +33,17 @@ CREATE TABLE users (
 --liquibase formatted sql
 
 --changeset markovka77:4
-CREATE TABLE reports(
+CREATE TABLE reports (
     id BIGSERIAL PRIMARY KEY,
     photo_path VARCHAR,
     text VARCHAR
+);
+
+--liquibase formatted sql
+
+--changeset q100s:2
+CREATE TABLE pet (
+    id BIGSERIAL PRIMARY KEY,
+    pet_type VARCHAR,
+    pet_name VARCHAR
 );
