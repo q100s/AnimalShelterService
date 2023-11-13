@@ -9,5 +9,4 @@ class AnimalizerApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

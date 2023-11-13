@@ -21,8 +21,7 @@ import static java.lang.Boolean.TRUE;
 public class RequestService {
     private static final Logger logger = LoggerFactory.getLogger(RequestService.class);
 
-    @Autowired
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
     public RequestService(RequestRepository requestRepository) {
         this.requestRepository = requestRepository;
@@ -87,22 +86,4 @@ public class RequestService {
         logger.info("Was invoked method for find all requests by tg_chat_id");
         return requestRepository.findAllRequestsByChatId(chatId);
     }
-
-    /**
-     * Проверка наличия обращений от пользователя - новый или не новый пользователь
-     * Использует метод репозитория  {@link RequestRepository#countRequestsByChatId(Long)}
-     *
-     * @param chatId - chat id пользователя в телеграмм
-     * @return - TRUE если пользователь еще не обращался (новый), FALSE - если пользователь уже обращался
-     */
-    public boolean checkIfNewUser(Long chatId) {
-        logger.info("Was invoked method for check if new user");
-
-        if (requestRepository.countRequestsByChatId(chatId) == 0) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
 }

@@ -24,8 +24,7 @@ public class Shelter {
     public Shelter() {
     }
 
-    public Shelter(Long id, String address, String securityPhoneNumber, String schedule, String safetyMeasures, String directionPathFile, String shelterType) {
-        this.id = id;
+    public Shelter(String address, String securityPhoneNumber, String schedule, String safetyMeasures, String directionPathFile, String shelterType) {
         this.address = address;
         this.securityPhoneNumber = securityPhoneNumber;
         this.schedule = schedule;
@@ -96,7 +95,9 @@ public class Shelter {
         if (o == null || getClass() != o.getClass()) return false;
         Shelter shelter = (Shelter) o;
         return Objects.equals(id, shelter.id) && Objects.equals(address, shelter.address)
-                && Objects.equals(securityPhoneNumber, shelter.securityPhoneNumber) && Objects.equals(schedule, shelter.schedule) && Objects.equals(safetyMeasures, shelter.safetyMeasures) && Objects.equals(directionPathFile, shelter.directionPathFile) && Objects.equals(shelterType, shelter.shelterType);
+                && Objects.equals(securityPhoneNumber, shelter.securityPhoneNumber) &&
+                Objects.equals(schedule, shelter.schedule) && Objects.equals(safetyMeasures, shelter.safetyMeasures)
+                && Objects.equals(directionPathFile, shelter.directionPathFile) && Objects.equals(shelterType, shelter.shelterType);
     }
 
     @Override
