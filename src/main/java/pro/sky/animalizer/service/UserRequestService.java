@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
 import pro.sky.animalizer.model.Report;
+import pro.sky.animalizer.model.Request;
 import pro.sky.animalizer.model.User;
 
 import java.util.HashMap;
@@ -29,42 +30,49 @@ public class UserRequestService {
     private final Logger logger = LoggerFactory.getLogger(UserRequestService.class);
     private Map<Long, Boolean> reportStateByChatId = new HashMap<>();
     private Map<Long, Boolean> updateUserInfoStateByChatId = new HashMap<>();
+    private Map<Long, Boolean> questionToVolunteerStateByChatId = new HashMap<>();
     private final Pattern pattern = Pattern.compile("(^[А-я]+)\\s+([А-я]+)\\s+(\\d{11}$)");
     private final InlineKeyboardMarkupService inlineKeyboardMarkupService;
     private final TelegramBot telegramBot;
     private final ShelterService shelterService;
     private final UserService userService;
     private final ReportService reportService;
+    private final RequestService requestService;
 
     public UserRequestService(InlineKeyboardMarkupService inlineKeyboardMarkupService,
                               TelegramBot telegramBot,
-                              ShelterService shelterService, UserService userService,
-                              ReportService reportService) {
+                              ShelterService shelterService,
+                              UserService userService,
+                              ReportService reportService,
+                              RequestService requestService) {
         this.inlineKeyboardMarkupService = inlineKeyboardMarkupService;
         this.telegramBot = telegramBot;
         this.shelterService = shelterService;
         this.userService = userService;
         this.reportService = reportService;
+        this.requestService = requestService;
     }
 
     public void sendStartMessage(Update update) {
         Message message = update.message();
-        Long chatId = message.from().id();
+        Long chatId = message.chat().id();
         String firstName = update.message().from().firstName();
         String userName = update.message().from().username();
-        long telegramId = update.message().from().id();
+        long telegramId = message.from().id();
         if (Boolean.TRUE.equals(updateUserInfoStateByChatId.get(chatId))) {
             updateUser(update);
-            updateUserInfoStateByChatId.remove(chatId);
         } else if (Boolean.TRUE.equals(reportStateByChatId.get(chatId))) {
             takeReportFromUser(update);
-            reportStateByChatId.remove(chatId);
+        } else if (Boolean.TRUE.equals(questionToVolunteerStateByChatId.get(chatId))) {
+            String requestText = message.text();
+            Request request = new Request(chatId, telegramId, requestText);
+            requestService.saveRequest(request);
+            telegramBot.execute(new SendMessage(chatId, "Твоё обращение передано волонтеру"));
+            questionToVolunteerStateByChatId.remove(chatId);
         } else if ("/start".equalsIgnoreCase(message.text())) {
             User user = userService.findUserByTelegramId(telegramId);
             if (user == null) {
-                telegramBot.execute(
-                        new SendMessage(chatId, "Приветсвую тебя меню приюта для животных, " + firstName)
-                );
+                telegramBot.execute(new SendMessage(chatId, "Добро пожаловать в меню приюта для животных"));
                 User newUser = new User(telegramId, userName);
                 userService.createUser(newUser);
                 getMenuWithShelterPicking(chatId);
@@ -89,47 +97,53 @@ public class UserRequestService {
     public void updateUser(Update update) {
         Message message = update.message();
         Matcher matcher = pattern.matcher(message.text());
-        String fullName = matcher.group(1) + " " + matcher.group(2);
-        String phoneNumber = matcher.group(3);
         long chatId = message.chat().id();
         long telegramId = message.from().id();
         String telegramNick = message.from().username();
-        User userByTelegramId = userService.findUserByTelegramId(telegramId);
-        if (userByTelegramId != null) {
-            Long userId = userByTelegramId.getId();
-            User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber);
-            userService.editUser(userId, updatedUser);
-            telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
+        if (matcher.find()) {
+            String fullName = matcher.group(1) + " " + matcher.group(2);
+            String phoneNumber = matcher.group(3);
+            User userByTelegramId = userService.findUserByTelegramId(telegramId);
+            if (userByTelegramId != null) {
+                Long userId = userByTelegramId.getId();
+                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber);
+                userService.editUser(userId, updatedUser);
+                telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
+            } else {
+                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber);
+                userService.createUser(newUser);
+                telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
+            }
+            updateUserInfoStateByChatId.remove(chatId);
         } else {
-            User newUser = new User(telegramId, telegramNick, fullName, phoneNumber);
-            userService.createUser(newUser);
-            telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
+            telegramBot.execute(new SendMessage(chatId, "Некорректный формат ввода! Попробуй ещё раз"));
         }
     }
 
+    /**
+     * Метод, принимающий от пользователя отчет и сохраняющий его в базе данных.<br>
+     * <p>
+     * #{@link TelegramBot#execute(BaseRequest)}
+     * #{@link ReportService#createReport(Report)}
+     *
+     * @param update апдейт, приходящий из telegram чата с пользователем.
+     */
     public void takeReportFromUser(Update update) {
-        String reportText = update.message().caption();
-        GetFile getFile = new GetFile(update.message().photo()[update.message().photo().length - 1].fileId());
-        GetFileResponse response = telegramBot.execute(getFile);
-        String imageUrl = telegramBot.getFullFilePath(response.file());
         Long chatId = update.message().chat().id();
         long telegramId = update.message().from().id();
-        telegramBot.execute(new SendMessage(chatId, """
-                Отправь, пожалуйста, следующую информацию о животном:
-                Рацион животного:
-                Общее самочувствие и привыкание к новому месту:
-                Изменение в поведении: отказ от старых привычек, приобретение новых:"""));
-        if (imageUrl != null && reportText != null) {
-            Report newReport = new Report();
-            newReport.setText(reportText);
-            newReport.setPhotoPath(imageUrl);
-//            newReport.setTelegramId(telegramId); добавится телеграмАйди в отчете после рефаторинга
+        if (update.message().caption() == null || update.message().photo() == null) {
+            SendMessage message = new SendMessage(chatId, "Некорректный формат отчета! Попробуй ещё раз");
+            telegramBot.execute(message);
+        } else {
+            String reportText = update.message().caption();
+            GetFile getFile = new GetFile(update.message().photo()[update.message().photo().length - 1].fileId());
+            GetFileResponse response = telegramBot.execute(getFile);
+            String imageUrl = telegramBot.getFullFilePath(response.file());
+            Report newReport = new Report(imageUrl, reportText, telegramId);
             SendMessage message = new SendMessage(chatId, "Спасибо за отчёт, результат проверки узнаете в течение дня!");
             telegramBot.execute(message);
             reportService.createReport(newReport);
-        } else {
-            SendMessage message = new SendMessage(chatId, "Некорректный формат отчета!");
-            telegramBot.execute(message);
+            reportStateByChatId.remove(chatId);
         }
     }
 
@@ -223,7 +237,7 @@ public class UserRequestService {
                 case "get personal info":
                     telegramBot.execute(new SendMessage(chatId,
                             "Напишите через пробел свое имя, фамилию и номер телефона с кодом страны (без плюса)"));
-                    reportStateByChatId.put(chatId, true);
+                    updateUserInfoStateByChatId.put(chatId, true);
                     break;
                 case "усыновление кошки":
                     getMenuWithCatsAdoptionInfo(chatId);
@@ -233,14 +247,15 @@ public class UserRequestService {
                     break;
                 case "report sending":
                     telegramBot.execute(new SendMessage(chatId, """
-                            Отправь, пожалуйста, следующую информацию о животном:
-                            Рацион животного:
-                            Общее самочувствие и привыкание к новому месту:
-                            Изменение в поведении: отказ от старых привычек, приобретение новых:"""));
+                            Отправь фотографию животного с информацией в ПОДПИСИ к фотографии. В информации должно быть:
+                            - Рацион животного;
+                            - Общее самочувствие и привыкание к новому месту;
+                            - Изменение в поведении: отказ от старых привычек, приобретение новых."""));
                     reportStateByChatId.put(chatId, true);
                     break;
                 case "volunteer calling":
-                    telegramBot.execute(new SendMessage(chatId, "Напиши сообщение волонтеру"));
+                    telegramBot.execute(new SendMessage(chatId, "Напиши сообщение волонтеру в свободной форме"));
+                    questionToVolunteerStateByChatId.put(chatId, true);
                     break;
                 case "правила знакомства с собакой":
                     telegramBot.execute(new SendMessage(chatId, "правила знакомства с собакой"));
@@ -288,7 +303,7 @@ public class UserRequestService {
                     telegramBot.execute(new SendMessage(chatId, "дом для кошки с изъянами"));
                     break;
                 case "причины отказа в усыновлении кошки":
-                    telegramBot.execute(new SendMessage(chatId,"причины отказа в усыновлении кошки"));
+                    telegramBot.execute(new SendMessage(chatId, "причины отказа в усыновлении кошки"));
                     break;
 
             }
@@ -415,6 +430,4 @@ public class UserRequestService {
             logger.error("Error during sending message: {}", sendResponse.description());
         }
     }
-
-
 }
