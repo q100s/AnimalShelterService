@@ -19,7 +19,6 @@ import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.Request;
 import pro.sky.animalizer.model.User;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -322,9 +321,14 @@ public class UserRequestService {
             List<Pet> pets = petService.getAllPets();
             for (Pet pet : pets) {
                 if (data.equals(pet.getPetName())) {
-                    SendPhoto sendPhoto = new SendPhoto(chatId, pet.getPhotoUrlPath());
-                    sendPhoto.caption(pet.getPetName());
-                    telegramBot.execute(sendPhoto);
+                    String photoUrlPath = pet.getPhotoUrlPath();
+                    if (photoUrlPath != null) {
+                        SendPhoto sendPhoto = new SendPhoto(chatId, photoUrlPath);
+                        sendPhoto.caption(pet.getPetName());
+                        telegramBot.execute(sendPhoto);
+                    } else {
+                        telegramBot.execute(new SendMessage(chatId, "у животного нет фотографии"));
+                    }
                 }
             }
         }
@@ -450,6 +454,7 @@ public class UserRequestService {
             logger.error("Error during sending message: {}", sendResponse.description());
         }
     }
+
     public void getMenuWithCats(Long chatId) {
         SendMessage sendMessage =
                 new SendMessage(chatId, "Выбери кошку, на которую хочешь взглянуть: ");
