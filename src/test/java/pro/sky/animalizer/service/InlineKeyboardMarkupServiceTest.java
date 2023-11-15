@@ -2,14 +2,21 @@ package pro.sky.animalizer.service;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 public class InlineKeyboardMarkupServiceTest {
-    InlineKeyboardMarkupService service = new InlineKeyboardMarkupService();
+    @Mock
+    private PetService petService;
 
+    @InjectMocks
+    private InlineKeyboardMarkupService service;
     @Test
     public void testCreateMenuWithShelterPicking() {
         InlineKeyboardMarkup markup = service.createMenuWithShelterPicking();
@@ -31,7 +38,7 @@ public class InlineKeyboardMarkupServiceTest {
     public void testCreateMenuAfterDogsShelterPick() {
         InlineKeyboardMarkup markup = service.createMenuAfterDogsShelterPick();
         assertNotNull(markup);
-        assertEquals(2, markup.inlineKeyboard().length);
+        assertEquals(3, markup.inlineKeyboard().length);
 
         InlineKeyboardButton button1 = markup.inlineKeyboard()[0][0];
         assertNotNull(button1);
@@ -52,13 +59,18 @@ public class InlineKeyboardMarkupServiceTest {
         assertNotNull(button4);
         assertEquals("Позвать волонтера", button4.text());
         assertEquals("volunteer calling", button4.callbackData());
+
+        InlineKeyboardButton button5 = markup.inlineKeyboard()[2][0];
+        assertNotNull(button5);
+        assertEquals("Посмотреть всех собак", button5.text());
+        assertEquals("все собаки", button5.callbackData());
     }
 
     @Test
     public void testCreateMenuAfterCatsShelterPick() {
         InlineKeyboardMarkup markup = service.createMenuAfterCatsShelterPick();
         assertNotNull(markup);
-        assertEquals(2, markup.inlineKeyboard().length);
+        assertEquals(3, markup.inlineKeyboard().length);
 
         InlineKeyboardButton button1 = markup.inlineKeyboard()[0][0];
         assertNotNull(button1);
@@ -79,6 +91,11 @@ public class InlineKeyboardMarkupServiceTest {
         assertNotNull(button4);
         assertEquals("Позвать волонтера", button4.text());
         assertEquals("volunteer calling", button4.callbackData());
+
+        InlineKeyboardButton button5 = markup.inlineKeyboard()[2][0];
+        assertNotNull(button5);
+        assertEquals("Посмотреть всех котиков", button5.text());
+        assertEquals("все котики", button5.callbackData());
     }
 
     @Test

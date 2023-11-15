@@ -7,17 +7,21 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
+import pro.sky.animalizer.model.Pet;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.Request;
 import pro.sky.animalizer.model.User;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,19 +42,22 @@ public class UserRequestService {
     private final UserService userService;
     private final ReportService reportService;
     private final RequestService requestService;
+    private final PetService petService;
 
     public UserRequestService(InlineKeyboardMarkupService inlineKeyboardMarkupService,
                               TelegramBot telegramBot,
                               ShelterService shelterService,
                               UserService userService,
                               ReportService reportService,
-                              RequestService requestService) {
+                              RequestService requestService,
+                              PetService petService) {
         this.inlineKeyboardMarkupService = inlineKeyboardMarkupService;
         this.telegramBot = telegramBot;
         this.shelterService = shelterService;
         this.userService = userService;
         this.reportService = reportService;
         this.requestService = requestService;
+        this.petService = petService;
     }
 
     public void sendStartMessage(Update update) {
@@ -305,7 +312,20 @@ public class UserRequestService {
                 case "причины отказа в усыновлении кошки":
                     telegramBot.execute(new SendMessage(chatId, "причины отказа в усыновлении кошки"));
                     break;
-
+                case "все котики":
+                    getMenuWithCats(chatId);
+                    break;
+                case "все собаки":
+                    getMenuWithDogs(chatId);
+                    break;
+            }
+            List<Pet> pets = petService.getAllPets();
+            for (Pet pet : pets) {
+                if (data.equals(pet.getPetName())) {
+                    SendPhoto sendPhoto = new SendPhoto(chatId, pet.getPhotoUrlPath());
+                    sendPhoto.caption(pet.getPetName());
+                    telegramBot.execute(sendPhoto);
+                }
             }
         }
     }
@@ -425,6 +445,25 @@ public class UserRequestService {
         SendMessage sendMessage =
                 new SendMessage(chatId, "Ниже представлена информация для усыновления кошки: ");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithCatsAdoptionInfo());
+        SendResponse sendResponse = telegramBot.execute(sendMessage);
+        if (!sendResponse.isOk()) {
+            logger.error("Error during sending message: {}", sendResponse.description());
+        }
+    }
+    public void getMenuWithCats(Long chatId) {
+        SendMessage sendMessage =
+                new SendMessage(chatId, "Выбери кошку, на которую хочешь взглянуть: ");
+        sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithCats());
+        SendResponse sendResponse = telegramBot.execute(sendMessage);
+        if (!sendResponse.isOk()) {
+            logger.error("Error during sending message: {}", sendResponse.description());
+        }
+    }
+
+    public void getMenuWithDogs(Long chatId) {
+        SendMessage sendMessage =
+                new SendMessage(chatId, "Выбери собаку, на которую хочешь взглянуть: ");
+        sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithDogs());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
             logger.error("Error during sending message: {}", sendResponse.description());
