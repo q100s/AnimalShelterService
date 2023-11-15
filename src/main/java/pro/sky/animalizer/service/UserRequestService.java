@@ -16,6 +16,7 @@ import pro.sky.animalizer.exceptions.ShelterNotFoundException;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.Request;
 import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.model.UserType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,11 +107,11 @@ public class UserRequestService {
             User userByTelegramId = userService.findUserByTelegramId(telegramId);
             if (userByTelegramId != null) {
                 Long userId = userByTelegramId.getId();
-                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber);
+                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.ADOPTER);
                 userService.editUser(userId, updatedUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             } else {
-                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber);
+                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.DEFAULT);
                 userService.createUser(newUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             }
