@@ -30,8 +30,13 @@ public class ReportService {
     }
 
 
-    public Report findReportById(long id) {
+    public Report findReportById(Long id) {
         logger.info("Started findReportById method");
         return reportRepository.findById(id).orElseThrow(ReportNotFondException::new);
+    }
+
+    public Report findReportByTelegramId(Long telegram_id) {
+        logger.info("Started findReportByTelegramId method");
+        return reportRepository.findById(telegram_id).orElseThrow(ReportNotFondException::new);
     }
 }
