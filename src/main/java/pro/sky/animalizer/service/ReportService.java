@@ -7,8 +7,8 @@ import pro.sky.animalizer.exceptions.ReportNotFondException;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.repositories.ReportRepository;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -37,6 +37,6 @@ public class ReportService {
 
     public Report findReportByTelegramId(Long telegram_id) {
         logger.info("Started findReportByTelegramId method");
-        return reportRepository.findById(telegram_id).orElseThrow(ReportNotFondException::new);
+            return reportRepository.findByTelegramId(telegram_id);
     }
 }

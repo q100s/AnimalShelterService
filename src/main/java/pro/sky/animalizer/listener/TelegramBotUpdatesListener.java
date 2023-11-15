@@ -90,5 +90,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     }
 
+    private void takePhotos (Update update){
+        if (update.message().photo().length > 0) {
+            GetFile getFile = new GetFile(update.message().photo()[0].fileId());
+            GetFileResponse response = telegramBot.execute(getFile);
+            //способ 1 через ссылку
+            String urlImage = telegramBot.getFullFilePath(response.file());
+            logger.info(urlImage);
 
+        }
+    }
 }

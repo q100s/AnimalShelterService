@@ -38,7 +38,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findUserByIdWhenTheUserNotFound() {
+    void findUserByIdWhenUserNotFound() {
         userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
         userTest.setId(3L);
         assertThrows(UserNotFoundException.class, () -> userService.findUserById(2L));

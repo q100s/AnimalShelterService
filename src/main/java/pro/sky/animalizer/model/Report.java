@@ -38,6 +38,22 @@ public class Report {
         this.id = id;
     }
 
+    public long getTelegramId() {
+        return telegramId;
+    }
+
+    public void setTelegramId(long telegramId) {
+        this.telegramId = telegramId;
+    }
+
+    public LocalDate getDateCreateReport() {
+        return dateCreateReport;
+    }
+
+    public void setDateCreateReport(LocalDate dateCreateReport) {
+        this.dateCreateReport = dateCreateReport;
+    }
+
     public String getPhotoPath() {
         return photoPath;
     }
