@@ -45,7 +45,7 @@ public class ReportController {
                     )
             })
     @GetMapping
-    public Collection<Report> takeAllReports(){
+    public Collection<Report> takeAllReports() {
         return reportService.findAllReport();
     }
 
@@ -90,7 +90,7 @@ public class ReportController {
             })
     @GetMapping("/by{telegramId}")
     public ResponseEntity<Report> findReportByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
-                                                 @PathVariable Long telegramId) {
+                                                         @PathVariable Long telegramId) {
         Report reportByTelegramId = reportService.findReportByTelegramId(telegramId);
         if (reportByTelegramId == null) {
             logger.error("There isn't a report with id = " + telegramId);

@@ -7,8 +7,7 @@ import pro.sky.animalizer.exceptions.ReportNotFondException;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.repositories.ReportRepository;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
 @Service
 public class ReportService {
@@ -19,12 +18,12 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-    public Report createReport(Report report){
+    public Report createReport(Report report) {
         logger.info("Started createReport method");
         return reportRepository.save(report);
     }
 
-    public Collection<Report>findAllReport(){
+    public Collection<Report> findAllReport() {
         logger.info("Started findAllReport method");
         return reportRepository.findAll();
     }
@@ -37,6 +36,6 @@ public class ReportService {
 
     public Report findReportByTelegramId(Long telegram_id) {
         logger.info("Started findReportByTelegramId method");
-            return reportRepository.findByTelegramId(telegram_id);
+        return reportRepository.findByTelegramId(telegram_id);
     }
 }

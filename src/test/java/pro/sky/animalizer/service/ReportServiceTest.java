@@ -26,40 +26,40 @@ public class ReportServiceTest {
     private ReportService reportService;
 
 
-    Report reportTest = new Report(1,"photoPathTest","testText");
+    Report reportTest = new Report(1, "photoPathTest", "testText");
 
     @Test
-    void createReport(){
+    void createReport() {
         when(reportRepositoryMock.save(reportTest)).thenReturn(reportTest);
-       assertEquals(reportRepositoryMock.save(reportTest),reportTest);
+        assertEquals(reportRepositoryMock.save(reportTest), reportTest);
     }
 
     @Test
-    void findAllReports(){
+    void findAllReports() {
         List<Report> listTest = new ArrayList<>();
         when(reportRepositoryMock.findAll()).thenReturn(listTest);
-        assertEquals(reportService.findAllReport(),listTest);
+        assertEquals(reportService.findAllReport(), listTest);
     }
 
 
     @Test
-    void findReportByIdWhenReportIsNotFound(){
+    void findReportByIdWhenReportIsNotFound() {
         assertThrows(ReportNotFondException.class,
-                ()-> reportService.findReportById(4L));
+                () -> reportService.findReportById(4L));
 
     }
 
     @Test
-    void findReportByTelegramId(){
+    void findReportByTelegramId() {
         when(reportRepositoryMock.findByTelegramId(2L)).thenReturn((reportTest));
-        assertEquals(reportService.findReportByTelegramId(2L),reportTest);
+        assertEquals(reportService.findReportByTelegramId(2L), reportTest);
 
     }
 
     @Test
-    void findReportById(){
+    void findReportById() {
         assertThrows(ReportNotFondException.class,
-                ()-> reportService.findReportById(4L));
+                () -> reportService.findReportById(4L));
 
     }
 
