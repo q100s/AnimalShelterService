@@ -14,13 +14,15 @@ public class Report {
     private String photoPath;
     private String text;
 
-    public Report(String photoPath, String text) {
-        this.photoPath = photoPath;
-        this.text = text;
-    }
+    private Long telegramId;
 
     public Report() {
+    }
 
+    public Report(String photoPath, String text, Long telegramId) {
+        this.photoPath = photoPath;
+        this.text = text;
+        this.telegramId = telegramId;
     }
 
     public long getId() {
@@ -47,23 +49,25 @@ public class Report {
         this.text = text;
     }
 
+    public Long getTelegramId() {
+        return telegramId;
+    }
+
+    public void setTelegramId(Long telegramId) {
+        this.telegramId = telegramId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return id == report.id && Objects.equals(photoPath, report.photoPath) && Objects.equals(text, report.text);
+        return id == report.id && Objects.equals(photoPath, report.photoPath) && Objects.equals(text, report.text)
+                && Objects.equals(telegramId, report.telegramId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, photoPath, text);
-    }
-
-    @Override
-    public String toString() {
-        return "Report{" +
-                "text='" + text + '\'' +
-                '}';
+        return Objects.hash(id, photoPath, text, telegramId);
     }
 }

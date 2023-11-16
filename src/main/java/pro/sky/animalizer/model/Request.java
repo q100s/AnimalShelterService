@@ -29,6 +29,12 @@ public class Request {
     public Request() {
     }
 
+    public Request(Long chatId, Long telegramId, String requestText) {
+        this.chatId = chatId;
+        this.telegramId = telegramId;
+        this.requestText = requestText;
+    }
+
     public Long getId() {
         return id;
     }

@@ -16,8 +16,9 @@ public class Pet {
     private Long id;
     private String petType;
     private String petName;
+    private String photoUrlPath;
 
-    public class User {
+    public Pet() {
     }
 
     public Long getId() {
@@ -44,15 +45,12 @@ public class Pet {
         this.petName = petName;
     }
 
-
-    public Pet() {
+    public String getPhotoUrlPath() {
+        return photoUrlPath;
     }
 
-    public Pet(Long id, String petType, String petName) {
-        this.id = id;
-        this.petType = petType;
-        this.petName = petName;
-
+    public void setPhotoUrlPath(String photoUrlPath) {
+        this.photoUrlPath = photoUrlPath;
     }
 
     @Override
@@ -60,12 +58,13 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(petType, pet.petType) && Objects.equals(petName, pet.petName);
+        return Objects.equals(id, pet.id) && Objects.equals(petType, pet.petType)
+                && Objects.equals(petName, pet.petName) && Objects.equals(photoUrlPath, pet.photoUrlPath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, petType, petName);
+        return Objects.hash(id, petType, petName, photoUrlPath);
     }
 
     @Override
@@ -74,6 +73,7 @@ public class Pet {
                 "id=" + id +
                 ", petType='" + petType + '\'' +
                 ", petName='" + petName + '\'' +
+                ", photoUrlPath='" + photoUrlPath + '\'' +
                 '}';
     }
 }

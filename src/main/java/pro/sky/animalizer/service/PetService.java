@@ -2,7 +2,6 @@ package pro.sky.animalizer.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.PetNotFoundException;
 import pro.sky.animalizer.model.Pet;
@@ -30,7 +29,7 @@ public class PetService {
         return petRepository.findById(petId).orElseThrow(PetNotFoundException::new);
     }
 
-    public List<Pet> getAllPet() {
+    public List<Pet> getAllPets() {
         logger.info("getAllPets method has been invoked");
         return petRepository.findAll();
     }
