@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
-    private final Pattern pattern = Pattern.compile("(^[А-я]+)\\s+([А-я]+)\\s+(\\d{11}$)");
     private final TelegramBot telegramBot;
     private final UserService userService;
     private final UserRequestService userRequestService;
@@ -49,7 +48,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             updates.forEach(update -> {
                 logger.info("Processing update: {}", update);
                 if (update.message() != null) {
-                    sendStartMessage(update);
+                    userRequestService.sendStartMessage(update);
                 }
                 userRequestService.createButtonClick(update);
             });
@@ -57,33 +56,5 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.error(e.getMessage(), e);
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
-    }
-
-    private void sendStartMessage(Update update) {
-        Message message = update.message();
-        Long chatId = message.from().id();
-        String text = message.text();
-        String firstName = update.message().from().firstName();
-        String userName = update.message().from().username();
-        long telegramId = update.message().from().id();
-        Matcher matcher = pattern.matcher(text);
-        if ("/start".equalsIgnoreCase(text)) {
-            User user = userService.findUserByTelegramId(telegramId);
-            if (user == null) {
-                telegramBot.execute(
-                        new SendMessage(chatId, "Приветсвую тебя меню приюта для животных, " + firstName)
-                );
-                User newUser = new User(telegramId, userName);
-                userService.createUser(newUser);
-                userRequestService.getMenuWithShelterPicking(chatId);
-            } else {
-                telegramBot.execute(new SendMessage(chatId, "Рад видеть тебя снова, " + firstName));
-                userRequestService.getMenuWithShelterPicking(chatId);
-            }
-        } else if (matcher.find()) {
-            String fullName = matcher.group(1) + " " + matcher.group(2);
-            String phoneNumber = matcher.group(3);
-            userRequestService.updateUser(update, fullName, phoneNumber);
-        }
     }
 }

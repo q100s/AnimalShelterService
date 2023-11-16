@@ -37,7 +37,7 @@ public class PetController {
             })
     @GetMapping
     public Collection<Pet> getAllPet() {
-        return service.getAllPet();
+        return service.getAllPets();
     }
 
     @Operation(

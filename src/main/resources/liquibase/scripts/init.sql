@@ -36,7 +36,8 @@ CREATE TABLE users (
 CREATE TABLE reports (
     id BIGSERIAL PRIMARY KEY,
     photo_path VARCHAR,
-    text VARCHAR
+    text VARCHAR,
+    telegram_id BIGINT
 );
 
 --liquibase formatted sql
@@ -45,5 +46,6 @@ CREATE TABLE reports (
 CREATE TABLE pet (
     id BIGSERIAL PRIMARY KEY,
     pet_type VARCHAR,
-    pet_name VARCHAR
+    pet_name VARCHAR,
+    photo_url_path VARCHAR
 );
