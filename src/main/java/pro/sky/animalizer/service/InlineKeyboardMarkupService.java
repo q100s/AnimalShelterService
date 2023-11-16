@@ -3,13 +3,20 @@ package pro.sky.animalizer.service;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
+import pro.sky.animalizer.model.Pet;
+
+import java.util.List;
 
 /**
  * Класс для создания привязанных кнопок под сообщениями.
  */
 @Component
 public class InlineKeyboardMarkupService {
+    private PetService petService;
 
+    public InlineKeyboardMarkupService(PetService petService) {
+        this.petService = petService;
+    }
 
     /**
      * Метод, генерирующий клавиатуру для выбора приюта.<br>
@@ -45,6 +52,9 @@ public class InlineKeyboardMarkupService {
                         .callbackData("report sending"),
                 new InlineKeyboardButton("Позвать волонтера")
                         .callbackData("volunteer calling"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Посмотреть всех собак")
+                        .callbackData("все собаки"));
         return inlineKeyboardMarkup;
     }
 
@@ -66,6 +76,9 @@ public class InlineKeyboardMarkupService {
                         .callbackData("report sending"),
                 new InlineKeyboardButton("Позвать волонтера")
                         .callbackData("volunteer calling"));
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Посмотреть всех котиков")
+                        .callbackData("все котики"));
         return inlineKeyboardMarkup;
     }
 
@@ -206,6 +219,29 @@ public class InlineKeyboardMarkupService {
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("Передать контактные данные").callbackData("get personal info"),
                 new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer calling"));
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup createMenuWithCats() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<String> catsNames = petService.getAllPets().stream()
+                .filter(pet -> pet.getPetType().equals("кошка"))
+                .map(Pet::getPetName)
+                .toList();
+        for (String catName : catsNames) {
+            inlineKeyboardMarkup.addRow(new InlineKeyboardButton(catName).callbackData(catName));
+        }
+        return inlineKeyboardMarkup;
+    }
+    public InlineKeyboardMarkup createMenuWithDogs() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<String> dogsNames = petService.getAllPets().stream()
+                .filter(pet -> pet.getPetType().equals("собака"))
+                .map(Pet::getPetName)
+                .toList();
+        for (String dogName : dogsNames) {
+            inlineKeyboardMarkup.addRow(new InlineKeyboardButton(dogName).callbackData(dogName));
+        }
         return inlineKeyboardMarkup;
     }
 }

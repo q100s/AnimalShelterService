@@ -46,5 +46,6 @@ CREATE TABLE reports (
 CREATE TABLE pet (
     id BIGSERIAL PRIMARY KEY,
     pet_type VARCHAR,
-    pet_name VARCHAR
+    pet_name VARCHAR,
+    photo_url_path VARCHAR
 );
