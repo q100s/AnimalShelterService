@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.UserNotFoundException;
 import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.model.UserType;
 import pro.sky.animalizer.repositories.UserRepository;
 
 import java.util.List;
@@ -48,9 +49,9 @@ public class UserService {
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         Optional.ofNullable(user.getFullName()).ifPresent(userCheck::setFullName);
         Optional.ofNullable(user.getPhoneNumber()).ifPresent(userCheck::setPhoneNumber);
-        Optional.ofNullable(user.getCarNumber()).ifPresent(userCheck::setCarNumber);
         Optional.ofNullable(user.getTelegramId()).ifPresent(userCheck::setTelegramId);
         Optional.ofNullable(user.getTelegramNick()).ifPresent(userCheck::setTelegramNick);
+        Optional.ofNullable(user.getUserType()).ifPresent(userCheck::setUserType);
         return userRepository.save(userCheck);
     }
 
