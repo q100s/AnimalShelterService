@@ -2,8 +2,6 @@ package pro.sky.animalizer.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -13,19 +11,16 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long telegramId;
-    private LocalDate dateCreateReport;
-
+    private LocalDate reportDate;
     private String photoPath;
-
     private String text;
-
     private Long telegramId;
 
     public Report() {
     }
 
-    public Report(String photoPath, String text, Long telegramId) {
+    public Report(LocalDate reportDate, String photoPath, String text, Long telegramId) {
+        this.reportDate = reportDate;
         this.photoPath = photoPath;
         this.text = text;
         this.telegramId = telegramId;
@@ -39,20 +34,12 @@ public class Report {
         this.id = id;
     }
 
-    public long getTelegramId() {
-        return telegramId;
+    public LocalDate getReportDate() {
+        return reportDate;
     }
 
-    public void setTelegramId(long telegramId) {
-        this.telegramId = telegramId;
-    }
-
-    public LocalDate getDateCreateReport() {
-        return dateCreateReport;
-    }
-
-    public void setDateCreateReport(LocalDate dateCreateReport) {
-        this.dateCreateReport = dateCreateReport;
+    public void setReportDate(LocalDate reportDate) {
+        this.reportDate = reportDate;
     }
 
     public String getPhotoPath() {
@@ -84,12 +71,24 @@ public class Report {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return id == report.id && Objects.equals(photoPath, report.photoPath) && Objects.equals(text, report.text)
+        return id == report.id && Objects.equals(reportDate, report.reportDate)
+                && Objects.equals(photoPath, report.photoPath) && Objects.equals(text, report.text)
                 && Objects.equals(telegramId, report.telegramId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, photoPath, text, telegramId);
+        return Objects.hash(id, reportDate, photoPath, text, telegramId);
+    }
+
+    @Override
+    public String toString() {
+        return "Report{" +
+                "id=" + id +
+                ", dateCreateReport=" + reportDate +
+                ", photoPath='" + photoPath + '\'' +
+                ", text='" + text + '\'' +
+                ", telegramId=" + telegramId +
+                '}';
     }
 }

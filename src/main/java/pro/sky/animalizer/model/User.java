@@ -34,12 +34,15 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.userType = userType;
     }
+
     public UserType getUserType() {
         return userType;
     }
+
     public void setUserType(UserType setUserType) {
         this.userType = setUserType;
     }
+
     public Long getId() {
         return id;
     }
@@ -47,9 +50,11 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
+
     public Long getTelegramId() {
         return telegramId;
     }
+
     public void setTelegramId(Long telegramId) {
         this.telegramId = telegramId;
     }
@@ -57,6 +62,7 @@ public class User {
     public String getTelegramNick() {
         return telegramNick;
     }
+
     public void setTelegramNick(String telegramNick) {
         this.telegramNick = telegramNick;
     }
@@ -76,10 +82,6 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
-
-
-
 
     @Override
     public boolean equals(Object o) {

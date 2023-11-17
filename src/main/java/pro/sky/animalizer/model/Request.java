@@ -16,10 +16,10 @@ import java.util.Objects;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // уникальный id обращения
-    private Long chatId; // id телеграмм чата
-    private Long telegramId; // id телеграм пользователя
-    private String requestText;  // текст обращения - с сутью обращения
+    private Long id;
+    private Long chatId;
+    private Long telegramId;
+    private String requestText;
 
     public Request(Long chatId, LocalDateTime requestTime, String requestText) {
         this.chatId = chatId;

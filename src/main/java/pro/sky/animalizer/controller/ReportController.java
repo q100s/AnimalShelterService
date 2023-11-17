@@ -30,6 +30,7 @@ public class ReportController {
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
+    @Operation(
             summary = "Получение всех отчетов, находящихся в базе данных",
             responses = {
                     @ApiResponse(

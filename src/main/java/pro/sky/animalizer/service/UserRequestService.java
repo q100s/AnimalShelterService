@@ -14,12 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
-import pro.sky.animalizer.model.Pet;
-import pro.sky.animalizer.model.Report;
-import pro.sky.animalizer.model.Request;
-import pro.sky.animalizer.model.User;
-import pro.sky.animalizer.model.UserType;
+import pro.sky.animalizer.exceptions.UserNotFoundException;
+import pro.sky.animalizer.model.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +58,7 @@ public class UserRequestService {
         this.petService = petService;
     }
 
-    public void sendStartMessage(Update update) {
+    public void sendMessageWithResult(Update update) {
         Message message = update.message();
         Long chatId = message.chat().id();
         String firstName = update.message().from().firstName();
@@ -76,6 +74,7 @@ public class UserRequestService {
             requestService.saveRequest(request);
             telegramBot.execute(new SendMessage(chatId, "Твоё обращение передано волонтеру"));
             questionToVolunteerStateByChatId.remove(chatId);
+            sendMessageWithQuestionToVolunteer(request);
         } else if ("/start".equalsIgnoreCase(message.text())) {
             User user = userService.findUserByTelegramId(telegramId);
             if (user == null) {
@@ -88,6 +87,16 @@ public class UserRequestService {
                 getMenuWithShelterPicking(chatId);
             }
         }
+    }
+
+    public void sendMessageWithQuestionToVolunteer(Request request) {
+        String textForVolunteer = "Пользователь с телеграм-id " + request.getTelegramId() + " обратился с вопросом: \n"
+                + request.getRequestText();
+        Long volunteerChatId = userService.getAllUsers().stream()
+                .filter(user -> user.getUserType().equals(UserType.VOLUNTEER))
+                .findAny().orElseThrow(UserNotFoundException::new)
+                .getTelegramId();
+        telegramBot.execute(new SendMessage(volunteerChatId, textForVolunteer));
     }
 
     /**
@@ -113,7 +122,7 @@ public class UserRequestService {
             User userByTelegramId = userService.findUserByTelegramId(telegramId);
             if (userByTelegramId != null) {
                 Long userId = userByTelegramId.getId();
-                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.ADOPTER);
+                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.DEFAULT);
                 userService.editUser(userId, updatedUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             } else {
@@ -138,6 +147,7 @@ public class UserRequestService {
     public void takeReportFromUser(Update update) {
         Long chatId = update.message().chat().id();
         long telegramId = update.message().from().id();
+        LocalDate reportDate = LocalDate.now();
         if (update.message().caption() == null || update.message().photo() == null) {
             SendMessage message = new SendMessage(chatId, "Некорректный формат отчета! Попробуй ещё раз");
             telegramBot.execute(message);
@@ -146,7 +156,7 @@ public class UserRequestService {
             GetFile getFile = new GetFile(update.message().photo()[update.message().photo().length - 1].fileId());
             GetFileResponse response = telegramBot.execute(getFile);
             String imageUrl = telegramBot.getFullFilePath(response.file());
-            Report newReport = new Report(imageUrl, reportText, telegramId);
+            Report newReport = new Report(reportDate, imageUrl, reportText, telegramId);
             SendMessage message = new SendMessage(chatId, "Спасибо за отчёт, результат проверки узнаете в течение дня!");
             telegramBot.execute(message);
             reportService.createReport(newReport);
