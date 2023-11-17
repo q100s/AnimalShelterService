@@ -24,14 +24,12 @@ import java.util.Collection;
 @RequestMapping("/report")
 public class ReportController {
     private final ReportService reportService;
-
+  
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
-
-    @Operation(
             summary = "Получение всех отчетов, находящихся в базе данных",
             responses = {
                     @ApiResponse(
@@ -45,8 +43,8 @@ public class ReportController {
                     )
             })
     @GetMapping
-    public Collection<Report> takeAllReports() {
-        return reportService.findAllReport();
+    public Collection<Report> getAllReports() {
+        return reportService.findAllReports();
     }
 
     @Operation(
@@ -63,40 +61,40 @@ public class ReportController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Отчет с переданным id не существует"
+                            description = "Отчета с переданным id не существует"
                     )
             })
     @GetMapping("/{id}")
-    public Report findReportById(@Parameter(description = "Идентификатор для поиска") @PathVariable Long id) {
+    public Report findUserById(@Parameter(description = "Идентификатор для поиска") @PathVariable long id) {
         return reportService.findReportById(id);
     }
 
     @Operation(
-            summary = "Поиск отчета по telegram-идентификатору",
+            summary = "Поиск отчетов по telegram-идентификатору",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Отчет, найденный по telegram-идентификатору",
+                            description = "Коллекция отчетов, найденный по telegram-идентификатору",
                             content = {@Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class)
+                                    schema = @Schema(implementation = User.class)
                             )
                             }
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Отчет с переданным telegram-id не существует"
+                            description = "Отчетов с переданным telegram-id не существует"
                     )
             })
     @GetMapping("/by{telegramId}")
-    public ResponseEntity<Report> findReportByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
-                                                         @PathVariable Long telegramId) {
-        Report reportByTelegramId = reportService.findReportByTelegramId(telegramId);
-        if (reportByTelegramId == null) {
-            logger.error("There isn't a report with id = " + telegramId);
+    public ResponseEntity<Collection<Report>> findByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
+                                                 @PathVariable long telegramId) {
+        Collection<Report> reportsByTelegramId = reportService.findReportsByTelegramId(telegramId);
+        if (reportsByTelegramId == null) {
+            logger.error("There isn't a user with id = " + telegramId);
             return ResponseEntity.badRequest().build();
         } else {
-            return ResponseEntity.ok(reportByTelegramId);
+            return ResponseEntity.ok(reportsByTelegramId);
         }
     }
 }

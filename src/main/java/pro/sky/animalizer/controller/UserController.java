@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.model.UserType;
 import pro.sky.animalizer.service.UserService;
 
 import java.util.List;
@@ -149,12 +150,15 @@ public class UserController {
             })
     @PutMapping("/{id}")
     public ResponseEntity<User> editUser(@Parameter(description = "Идентификатор для поиска") @PathVariable long id,
-                                         @Parameter(description = "Отредактированный пользователь") @RequestBody User shelterUser) {
+                                         @Parameter(description = "Отредактированный пользователь") @RequestBody User shelterUser,
+                                         @Parameter(description = "Выбор типа пользователя") @RequestBody UserType userType) {
         User shelterUserCheck = userService.editUser(id, shelterUser);
         if (shelterUserCheck == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(shelterUser);
+
+
     }
 
     @Operation(

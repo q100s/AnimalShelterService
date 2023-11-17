@@ -23,7 +23,7 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-    public Collection<Report> findAllReport() {
+    public Collection<Report> findAllReports(){
         logger.info("Started findAllReport method");
         return reportRepository.findAll();
     }
@@ -34,8 +34,8 @@ public class ReportService {
         return reportRepository.findById(id).orElseThrow(ReportNotFondException::new);
     }
 
-    public Report findReportByTelegramId(Long telegram_id) {
-        logger.info("Started findReportByTelegramId method");
-        return reportRepository.findByTelegramId(telegram_id);
+    public Collection<Report> findReportsByTelegramId(Long telegramId) {
+        logger.info("start method findUserByTelegramId");
+        return reportRepository.findByTelegramId(telegramId);
     }
 }
