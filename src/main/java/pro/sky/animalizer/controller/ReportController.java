@@ -24,13 +24,13 @@ import java.util.Collection;
 @RequestMapping("/report")
 public class ReportController {
     private final ReportService reportService;
+  
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
-    @Operation(
-            summary = "Поиск всех отчетов, находящихся в базе данных",
+            summary = "Получение всех отчетов, находящихся в базе данных",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -55,7 +55,7 @@ public class ReportController {
                             description = "Отчет, найденный по идентификатору",
                             content = {@Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = Report.class)
                             )
                             }
                     ),

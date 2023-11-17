@@ -1,6 +1,8 @@
 package pro.sky.animalizer.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -11,7 +13,11 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private long telegramId;
+    private LocalDate dateCreateReport;
+
     private String photoPath;
+
     private String text;
 
     private Long telegramId;
@@ -31,6 +37,22 @@ public class Report {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getTelegramId() {
+        return telegramId;
+    }
+
+    public void setTelegramId(long telegramId) {
+        this.telegramId = telegramId;
+    }
+
+    public LocalDate getDateCreateReport() {
+        return dateCreateReport;
+    }
+
+    public void setDateCreateReport(LocalDate dateCreateReport) {
+        this.dateCreateReport = dateCreateReport;
     }
 
     public String getPhotoPath() {

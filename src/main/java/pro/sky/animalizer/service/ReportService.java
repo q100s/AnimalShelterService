@@ -18,7 +18,7 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-    public Report createReport(Report report){
+    public Report createReport(Report report) {
         logger.info("Started createReport method");
         return reportRepository.save(report);
     }
@@ -29,7 +29,7 @@ public class ReportService {
     }
 
 
-    public Report findReportById(long id) {
+    public Report findReportById(Long id) {
         logger.info("Started findReportById method");
         return reportRepository.findById(id).orElseThrow(ReportNotFondException::new);
     }

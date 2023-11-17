@@ -46,6 +46,17 @@ CREATE TABLE reports (
 CREATE TABLE pet (
     id BIGSERIAL PRIMARY KEY,
     pet_type VARCHAR,
-    pet_name VARCHAR,
-    photo_url_path VARCHAR
+    pet_name VARCHAR
 );
+
+--liquibase formatted sql
+
+--changeset markovka77:5
+ALTER TABLE reports ADD COLUMN
+telegram_id BIGINT
+
+--liquibase formatted sql
+
+--changeset markovka77:6
+ALTER TABLE reports ADD COLUMN
+date_create_report DATE
