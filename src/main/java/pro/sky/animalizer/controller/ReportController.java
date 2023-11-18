@@ -75,7 +75,35 @@ public class ReportController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Коллекция отчетов, найденный по telegram-идентификатору",
+                            description = "Коллекция отчетов, найденных по telegram-идентификатору",
+                            content = {@Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = Report[].class))
+                            )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Отчетов с переданным telegram-id не существует"
+                    )
+            })
+    @GetMapping("/by{telegramId}")
+    public ResponseEntity<Collection<Report>> findAllByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
+                                                 @PathVariable long telegramId) {
+        Collection<Report> reportsByTelegramId = reportService.findReportsByTelegramId(telegramId);
+        if (reportsByTelegramId == null) {
+            logger.error("There isn't a user with id = " + telegramId);
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok(reportsByTelegramId);
+        }
+    }
+    @Operation(
+            summary = "Поиск последнего отправленного отчета пользователем с переданным telegram-идентификатором",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Последний отчет, найденный по telegram-идентификатору",
                             content = {@Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = User.class)
@@ -87,15 +115,15 @@ public class ReportController {
                             description = "Отчетов с переданным telegram-id не существует"
                     )
             })
-    @GetMapping("/by{telegramId}")
-    public ResponseEntity<Collection<Report>> findByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
-                                                 @PathVariable long telegramId) {
-        Collection<Report> reportsByTelegramId = reportService.findReportsByTelegramId(telegramId);
-        if (reportsByTelegramId == null) {
-            logger.error("There isn't a user with id = " + telegramId);
+    @GetMapping("/lastBy{telegramId}")
+    public ResponseEntity<Report> findLastByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
+                                                               @PathVariable long telegramId) {
+        Report lastReportByTelegramId = reportService.findLastReportByTelegramId(telegramId);
+        if (lastReportByTelegramId == null) {
+            logger.error("У пользователя с телеграм-id " + telegramId + " нет отчетов.");
             return ResponseEntity.badRequest().build();
         } else {
-            return ResponseEntity.ok(reportsByTelegramId);
+            return ResponseEntity.ok(lastReportByTelegramId);
         }
     }
 }

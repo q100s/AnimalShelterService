@@ -88,8 +88,10 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(telegramId, user.telegramId)
-                && Objects.equals(telegramNick, user.telegramNick) && Objects.equals(fullName, user.fullName);
+        return Objects.equals(id, user.id)
+                && Objects.equals(telegramId, user.telegramId)
+                && Objects.equals(telegramNick, user.telegramNick)
+                && Objects.equals(fullName, user.fullName);
 
     }
 

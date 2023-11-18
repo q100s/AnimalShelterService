@@ -58,8 +58,10 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(petType, pet.petType)
-                && Objects.equals(petName, pet.petName) && Objects.equals(photoUrlPath, pet.photoUrlPath);
+        return Objects.equals(id, pet.id)
+                && Objects.equals(petType, pet.petType)
+                && Objects.equals(petName, pet.petName)
+                && Objects.equals(photoUrlPath, pet.photoUrlPath);
     }
 
     @Override

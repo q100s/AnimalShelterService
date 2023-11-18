@@ -22,6 +22,7 @@ public class PetService {
     public PetService(PetRepository petRepository) {
         this.petRepository = petRepository;
     }
+
     public Pet getPetById(Long petId) {
         logger.info("getPetById method has been invoked");
         logger.debug("Requesting info for Pet with id: {}", petId);
@@ -38,7 +39,6 @@ public class PetService {
         logger.info("createPet method has been invoked");
         return petRepository.save(pet);
     }
-
 
     public Pet editPet(Long petId, Pet pet) {
         logger.info("editPet method has been invoked");
@@ -57,13 +57,12 @@ public class PetService {
     }
 
     public enum DogHandler {
-        IVAN ("У собаки всегда должна быть чистая вода в миске"),
-        ANTON ("Собаку нужно любить и ценить"),
-        PETR ("Собаке нужно ставить прививки раз в год"),
-        ALEX ("Собаку нельзя оставлять одну, если порода плохо переносит одиночество");
+        IVAN("У собаки всегда должна быть чистая вода в миске"),
+        ANTON("Собаку нужно любить и ценить"),
+        PETR("Собаке нужно ставить прививки раз в год"),
+        ALEX("Собаку нельзя оставлять одну, если порода плохо переносит одиночество");
+
         DogHandler(String s) {
         }
     }
-
-
 }

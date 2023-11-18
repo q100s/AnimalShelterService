@@ -71,8 +71,10 @@ public class Report {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return id == report.id && Objects.equals(reportDate, report.reportDate)
-                && Objects.equals(photoPath, report.photoPath) && Objects.equals(text, report.text)
+        return id == report.id
+                && Objects.equals(reportDate, report.reportDate)
+                && Objects.equals(photoPath, report.photoPath)
+                && Objects.equals(text, report.text)
                 && Objects.equals(telegramId, report.telegramId);
     }
 

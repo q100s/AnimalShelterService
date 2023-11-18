@@ -11,7 +11,6 @@ import pro.sky.animalizer.repositories.ReportRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +52,7 @@ public class ReportServiceTest {
     @Test
     void findReportByTelegramId() {
         reportsByTelegramId.add(reportTest);
-        when(reportRepositoryMock.findByTelegramId(1L)).thenReturn(reportsByTelegramId);
+        when(reportRepositoryMock.findAllByTelegramId(1L)).thenReturn(reportsByTelegramId);
         assertEquals(reportService.findReportsByTelegramId(1L), reportsByTelegramId);
         assertEquals(reportService.findReportsByTelegramId(2L), emptyList);
     }

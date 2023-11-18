@@ -8,9 +8,6 @@ public enum UserType {
 
     UserType(String s) {
     }
-
     UserType() {
     }
-
 }
-

@@ -36,6 +36,11 @@ public class ReportService {
 
     public Collection<Report> findReportsByTelegramId(Long telegramId) {
         logger.info("start method findUserByTelegramId");
-        return reportRepository.findByTelegramId(telegramId);
+        return reportRepository.findAllByTelegramId(telegramId);
+    }
+
+    public Report findLastReportByTelegramId(Long telegramId){
+        logger.info("start method findLastReportByTelegramId");
+        return reportRepository.findLastReportByTelegramId(telegramId);
     }
 }
