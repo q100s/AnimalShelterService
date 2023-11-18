@@ -1,6 +1,5 @@
 package pro.sky.animalizer.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,13 +9,13 @@ import pro.sky.animalizer.exceptions.ReportNotFondException;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.repositories.ReportRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class ReportServiceTest {
@@ -24,9 +23,11 @@ public class ReportServiceTest {
     private ReportRepository reportRepositoryMock;
     @InjectMocks
     private ReportService reportService;
+    Report reportTest = new Report(LocalDate.now(),"photoPathTest", "testText", 1L);
 
+    List<Report> reportsByTelegramId = new ArrayList<>();
+    List<Report> emptyList = new ArrayList<>();
 
-    Report reportTest = new Report(1, "photoPathTest", "testText");
 
     @Test
     void createReport() {
@@ -38,7 +39,7 @@ public class ReportServiceTest {
     void findAllReports() {
         List<Report> listTest = new ArrayList<>();
         when(reportRepositoryMock.findAll()).thenReturn(listTest);
-        assertEquals(reportService.findAllReport(), listTest);
+        assertEquals(reportService.findAllReports(), listTest);
     }
 
 
@@ -46,21 +47,19 @@ public class ReportServiceTest {
     void findReportByIdWhenReportIsNotFound() {
         assertThrows(ReportNotFondException.class,
                 () -> reportService.findReportById(4L));
-
     }
 
     @Test
     void findReportByTelegramId() {
-        when(reportRepositoryMock.findByTelegramId(2L)).thenReturn((reportTest));
-        assertEquals(reportService.findReportByTelegramId(2L), reportTest);
-
+        reportsByTelegramId.add(reportTest);
+        when(reportRepositoryMock.findAllByTelegramId(1L)).thenReturn(reportsByTelegramId);
+        assertEquals(reportService.findReportsByTelegramId(1L), reportsByTelegramId);
+        assertEquals(reportService.findReportsByTelegramId(2L), emptyList);
     }
 
     @Test
     void findReportById() {
         assertThrows(ReportNotFondException.class,
                 () -> reportService.findReportById(4L));
-
     }
-
 }

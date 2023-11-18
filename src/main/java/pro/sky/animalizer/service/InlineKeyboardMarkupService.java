@@ -33,7 +33,6 @@ public class InlineKeyboardMarkupService {
         return inlineKeyboardMarkup;
     }
 
-
     /**
      * Метод, генерирующий клавиатуру для выбора действия внутри меню приюта для собак.<br>
      * #{@link InlineKeyboardMarkup#addRow(InlineKeyboardButton...)} <br>
@@ -222,6 +221,13 @@ public class InlineKeyboardMarkupService {
         return inlineKeyboardMarkup;
     }
 
+    /**
+     * Метод, генерирующий клавиатуру для предоставления информации обо всех кошках из приюта.<br>
+     * #{@link InlineKeyboardMarkup#addRow(InlineKeyboardButton...)} <br>
+     * #{@link PetService#getAllPets()} <br>
+     *
+     * @return InlineKeyboardMarkup
+     */
     public InlineKeyboardMarkup createMenuWithCats() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<String> catsNames = petService.getAllPets().stream()
@@ -233,6 +239,14 @@ public class InlineKeyboardMarkupService {
         }
         return inlineKeyboardMarkup;
     }
+
+    /**
+     * Метод, генерирующий клавиатуру для предоставления информации обо всех собаках из приюта.<br>
+     * #{@link InlineKeyboardMarkup#addRow(InlineKeyboardButton...)} <br>
+     * #{@link PetService#getAllPets()} <br>
+     *
+     * @return InlineKeyboardMarkup
+     */
     public InlineKeyboardMarkup createMenuWithDogs() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<String> dogsNames = petService.getAllPets().stream()
