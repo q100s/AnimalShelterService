@@ -5,9 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.ReportNotFondException;
 import pro.sky.animalizer.model.Report;
+import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.repositories.ReportRepository;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -15,8 +20,10 @@ public class ReportService {
     private final ReportRepository reportRepository;
 
     public ReportService(ReportRepository reportRepository) {
+
         this.reportRepository = reportRepository;
     }
+
 
     public Report createReport(Report report) {
         logger.info("Started createReport method");
@@ -43,4 +50,11 @@ public class ReportService {
         logger.info("start method findLastReportByTelegramId");
         return reportRepository.findLastReportByTelegramId(telegramId);
     }
+    public Collection<Report> getAllUsersWhoNotSendReport(LocalDate localDate) {
+        logger.info("start method getAllUsersWhoNotSendReport");
+     return reportRepository.findAllUsersWhoNotSendReport(localDate);
+    }
+
+
+
 }

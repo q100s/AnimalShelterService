@@ -12,10 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.model.UserType;
 import pro.sky.animalizer.service.UserService;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -183,4 +186,14 @@ public class UserController {
         userService.deleteUserById(id);
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/ids")
+    public Collection<Report> getAllIds(@RequestParam LocalDate localDate) {
+        return  userService.getUsersWhoDoNotSendReportMoreThen2Days(localDate);
+
+
+    }
+
+
 }

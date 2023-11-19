@@ -4,12 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.UserNotFoundException;
+import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.model.User;
-import pro.sky.animalizer.model.UserType;
+import pro.sky.animalizer.repositories.ReportRepository;
 import pro.sky.animalizer.repositories.UserRepository;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Класс-сервис с бизнес-логикой по работе с пользователями.
@@ -18,9 +23,14 @@ import java.util.Optional;
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
+    private final ReportService reportService;
 
-    public UserService(UserRepository userRepository) {
+
+
+    public UserService(UserRepository userRepository, ReportService reportService) {
         this.userRepository = userRepository;
+
+        this.reportService = reportService ;
     }
 
     public User createUser(User user) {
@@ -60,4 +70,11 @@ public class UserService {
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.delete(userCheck);
     }
+
+    public Collection<Report>getUsersWhoDoNotSendReportMoreThen2Days(LocalDate localDate){
+        return reportService.getAllUsersWhoNotSendReport(localDate);
+
+    }
+
+
 }
