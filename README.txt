@@ -1,11 +1,29 @@
-<h1 align="center">Здраствуйте👋, мы команда javaBeans</h1>
-<h3 align="center">Командный проект: Telegram-бот для приюта животных.</h3>
+<p align="left">Здраствуйте👋, мы команда javaBeans</p>
 
-- 📫 How to reach me **madahtoxa@mail.ru**
+###
 
-<h3 align="left">Connect with me:</h3>
-<p align="left">
-</p>
+<p align="left">Командный проект: Telegram-бот для приюта животных.</p>
 
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://www.java.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" alt="java" width="40" height="40"/> </a> <a href="https://www.postgresql.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/> </a> <a href="https://spring.io/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/springio/springio-icon.svg" alt="spring" width="40" height="40"/> </a> </p>
+###
+
+<p align="left">Участники <br>- Анохин Эдуард;     <br>- Воронков Марк;     <br>- Мачульский Антон.</p>
+
+###
+
+<p align="left">Проект написан с использованием:<br>    Java 17;<br>    Spring-boot;<br>    Spring JPA;<br>    Telegram API;<br>    Maven;<br>    PostgresSQL;<br>    Liquibase.</p>
+
+###
+
+<div align="left">
+  <a href="https://www.youtube.com/watch?v=B7pJH_yfYYU&ab_channel=someMan" target="_blank">
+    <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/youtube/default.svg" width="52" height="40" alt="youtube logo"  />
+  </a>
+</div>
+
+###
+
+<div align="left">
+  <img height="200" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfFEdweWPwGX0mge-xV_c5ySRbI8yp2qDomnsp0rsMNGq8cSJaHk1Ckm_JYo1YQiEf7Lk&usqp=CAU"  />
+</div>
+
+###
