@@ -3,6 +3,7 @@ package pro.sky.animalizer.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.animalizer.exceptions.NoReportsException;
 import pro.sky.animalizer.exceptions.ReportNotFondException;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.repositories.ReportRepository;
@@ -28,7 +29,6 @@ public class ReportService {
         return reportRepository.findAll();
     }
 
-
     public Report findReportById(Long id) {
         logger.info("Started findReportById method");
         return reportRepository.findById(id).orElseThrow(ReportNotFondException::new);
@@ -41,6 +41,7 @@ public class ReportService {
 
     public Report findLastReportByTelegramId(Long telegramId){
         logger.info("start method findLastReportByTelegramId");
-        return reportRepository.findLastReportByTelegramId(telegramId);
+        logger.error("User with telegramId: " + telegramId + " have no reports");
+        return reportRepository.findLastReportByTelegramId(telegramId).orElseThrow(NoReportsException::new);
     }
 }

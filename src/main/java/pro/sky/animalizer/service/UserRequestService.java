@@ -68,15 +68,7 @@ public class UserRequestService {
         if (Boolean.TRUE.equals(updateUserInfoStateByChatId.get(chatId))) {
             updateUser(update);
         } else if (Boolean.TRUE.equals(reportStateByChatId.get(chatId))) {
-            LocalDate lastReportDate = reportService.findLastReportByTelegramId(telegramId).getReportDate();
-            if (lastReportDate.equals(LocalDate.now())){
-                SendMessage rejectedMessage = new SendMessage(
-                        chatId, "Сегодня ты уже отправлял отчет. Ждем твоего отчета завтра");
-                telegramBot.execute(rejectedMessage);
-                reportStateByChatId.remove(chatId);
-            } else {
-                getReportFromUser(update);
-            }
+            getReportFromUser(update);
         } else if (Boolean.TRUE.equals(questionToVolunteerStateByChatId.get(chatId))) {
             sendMessageWithQuestionToVolunteer(update);
         } else if ("/start".equalsIgnoreCase(message.text())) {
@@ -142,7 +134,6 @@ public class UserRequestService {
         Long chatId = update.message().chat().id();
         Long telegramId = update.message().from().id();
         LocalDate reportDate = LocalDate.now();
-        Collection<Report> allUsersReports = reportService.findReportsByTelegramId(telegramId);
         if (update.message().caption() == null || update.message().photo() == null) {
             SendMessage message = new SendMessage(
                     chatId, "Некорректный формат отчета! Попробуй ещё раз");
@@ -158,19 +149,6 @@ public class UserRequestService {
             telegramBot.execute(message);
             reportService.createReport(newReport);
             reportStateByChatId.remove(chatId);
-            if (allUsersReports.size() == 30) {
-                SendMessage messageWith30DaysEnding = new SendMessage
-                        (chatId, "Вы прошли 30-ти дневный испытательный срок. Ожидайте результата!");
-                telegramBot.execute(messageWith30DaysEnding);
-                Long volunteerChatId = userService.getAllUsers().stream()
-                        .filter(user -> user.getUserType().equals(UserType.VOLUNTEER))
-                        .findAny().orElseThrow(UserNotFoundException::new)
-                        .getTelegramId();
-                SendMessage notificationForVolunteer = new SendMessage
-                        (volunteerChatId, "Пользователь с телеграм-id " + chatId
-                                + " прошёл 30-ти дневный испытательный срок");
-                telegramBot.execute(notificationForVolunteer);
-            }
         }
     }
 
@@ -211,6 +189,7 @@ public class UserRequestService {
         CallbackQuery callbackQuery = update.callbackQuery();
         if (callbackQuery != null) {
             long chatId = callbackQuery.message().chat().id();
+            long telegramId = callbackQuery.message().from().id();
             String data = callbackQuery.data();
             switch (data) {
                 case "cat's shelter":
@@ -383,6 +362,7 @@ public class UserRequestService {
                 }
             }
         }
+
     }
 
     /**

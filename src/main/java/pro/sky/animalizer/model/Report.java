@@ -26,6 +26,10 @@ public class Report {
         this.telegramId = telegramId;
     }
 
+    public Report(LocalDate reportDate) {
+        this.reportDate = reportDate;
+    }
+
     public long getId() {
         return id;
     }

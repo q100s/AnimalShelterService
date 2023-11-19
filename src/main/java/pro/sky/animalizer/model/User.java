@@ -1,6 +1,9 @@
 package pro.sky.animalizer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -16,8 +19,13 @@ public class User {
     private String telegramNick;
     private String fullName;
     private String phoneNumber;
+    private LocalDate endingOfTrialPeriod;
     @Enumerated(EnumType.STRING)
     private UserType userType;
+    @OneToOne
+    @JoinColumn(name = "pet_id")
+    @JsonIgnore
+    private Pet pet;
 
     public User() {
     }
@@ -81,6 +89,22 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public LocalDate getEndingOfTrialPeriod() {
+        return endingOfTrialPeriod;
+    }
+
+    public void setEndingOfTrialPeriod(LocalDate endingOfTrialPeriod) {
+        this.endingOfTrialPeriod = endingOfTrialPeriod;
+    }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
     }
 
     @Override

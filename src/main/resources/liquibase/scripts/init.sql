@@ -28,7 +28,9 @@ CREATE TABLE users (
     telegram_nick VARCHAR,
     full_name VARCHAR,
     phone_number VARCHAR,
-    user_type VARCHAR -- enum UserType
+    user_type VARCHAR, -- enum UserType
+    ending_of_trial_period DATE,
+    pet_id BIGINT
 );
 --liquibase formatted sql
 
@@ -48,5 +50,6 @@ CREATE TABLE pet (
     id BIGSERIAL PRIMARY KEY,
     pet_type VARCHAR,
     pet_name VARCHAR,
-    photo_url_path VARCHAR
+    photo_url_path VARCHAR,
+    users_id BIGINT
 );

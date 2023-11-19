@@ -20,15 +20,12 @@ import java.util.List;
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
-    private final UserService userService;
     private final UserRequestService userRequestService;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
-                                      UserService userService,
                                       UserRequestService userRequestService) {
         this.telegramBot = telegramBot;
-        this.userService = userService;
         this.userRequestService = userRequestService;
     }
 

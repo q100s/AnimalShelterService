@@ -112,7 +112,7 @@ public class ReportController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Отчетов с переданным telegram-id не существует"
+                            description = "У пользователя, с переданным telegram-идентификатором нет отчетов "
                     )
             })
     @GetMapping("/lastBy{telegramId}")

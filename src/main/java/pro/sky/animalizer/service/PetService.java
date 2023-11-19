@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalizer.exceptions.PetNotFoundException;
+import pro.sky.animalizer.exceptions.UserNotFoundException;
 import pro.sky.animalizer.model.Pet;
 import pro.sky.animalizer.repositories.PetRepository;
 
@@ -34,6 +35,13 @@ public class PetService {
         logger.info("getAllPets method has been invoked");
         return petRepository.findAll();
     }
+    public Pet getPetByUserId(Long userId) {
+        logger.info("getPetByUserId method has been invoked");
+        logger.debug("Requesting info for Pet with user's id: {}", userId);
+        logger.error("There is no user with id: " + userId);
+        return petRepository.findByAdopter_id(userId).orElseThrow(UserNotFoundException::new);
+    }
+
 
     public Pet createPet(Pet pet) {
         logger.info("createPet method has been invoked");
@@ -45,24 +53,15 @@ public class PetService {
         logger.error("There is no pet with id: " + petId);
         Pet editedPet = petRepository.findById(petId).orElseThrow(PetNotFoundException::new);
         Optional.ofNullable(pet.getPetType()).ifPresent(editedPet::setPetType);
+        Optional.ofNullable(pet.getPetName()).ifPresent(editedPet::setPetName);
+        Optional.ofNullable(pet.getPhotoUrlPath()).ifPresent(editedPet::setPhotoUrlPath);
         return petRepository.save(editedPet);
     }
 
-    public Pet deletePet(Long petId) {
+    public void deletePet(Long petId) {
         logger.info("deletePet method has been invoked");
         logger.error("There is no pet with id: " + petId);
         Pet deletePet = petRepository.findById(petId).orElseThrow(PetNotFoundException::new);
         petRepository.delete(deletePet);
-        return deletePet;
-    }
-
-    public enum DogHandler {
-        IVAN("У собаки всегда должна быть чистая вода в миске"),
-        ANTON("Собаку нужно любить и ценить"),
-        PETR("Собаке нужно ставить прививки раз в год"),
-        ALEX("Собаку нельзя оставлять одну, если порода плохо переносит одиночество");
-
-        DogHandler(String s) {
-        }
     }
 }
