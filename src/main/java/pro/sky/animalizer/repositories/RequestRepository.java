@@ -8,7 +8,7 @@ import pro.sky.animalizer.model.Request;
 import java.util.Collection;
 
 /**
- * Репозиторий обращений для работы с БД
+ * Интерфейс - репозиторий для работы с сущностью Request.
  */
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {

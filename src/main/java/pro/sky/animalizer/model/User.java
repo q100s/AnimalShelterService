@@ -1,6 +1,9 @@
 package pro.sky.animalizer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -16,7 +19,13 @@ public class User {
     private String telegramNick;
     private String fullName;
     private String phoneNumber;
-    private String carNumber;
+    private LocalDate endingOfTrialPeriod;
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+    @OneToOne
+    @JoinColumn(name = "pet_id")
+    @JsonIgnore
+    private Pet pet;
 
     public User() {
     }
@@ -26,12 +35,22 @@ public class User {
         this.telegramNick = telegramNick;
     }
 
-    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber) {
+    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber, UserType userType) {
         this.telegramId = telegramId;
         this.telegramNick = telegramNick;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
+        this.userType = userType;
     }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType setUserType) {
+        this.userType = setUserType;
+    }
+
     public Long getId() {
         return id;
     }
@@ -39,6 +58,7 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
+
     public Long getTelegramId() {
         return telegramId;
     }
@@ -71,12 +91,20 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getCarNumber() {
-        return carNumber;
+    public LocalDate getEndingOfTrialPeriod() {
+        return endingOfTrialPeriod;
     }
 
-    public void setCarNumber(String carNumber) {
-        this.carNumber = carNumber;
+    public void setEndingOfTrialPeriod(LocalDate endingOfTrialPeriod) {
+        this.endingOfTrialPeriod = endingOfTrialPeriod;
+    }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
     }
 
     @Override
@@ -84,14 +112,16 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(telegramId, user.telegramId)
-                && Objects.equals(telegramNick, user.telegramNick) && Objects.equals(fullName, user.fullName)
-                && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(carNumber, user.carNumber);
+        return Objects.equals(id, user.id)
+                && Objects.equals(telegramId, user.telegramId)
+                && Objects.equals(telegramNick, user.telegramNick)
+                && Objects.equals(fullName, user.fullName);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, telegramId, telegramNick, fullName, phoneNumber, carNumber);
+        return Objects.hash(id, telegramId, telegramNick, fullName, phoneNumber);
     }
 
     @Override
@@ -102,7 +132,6 @@ public class User {
                 ", telegramNick='" + telegramNick + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", carNumber='" + carNumber + '\'' +
                 '}';
     }
 }

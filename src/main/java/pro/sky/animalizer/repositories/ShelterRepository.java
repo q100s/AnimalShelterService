@@ -9,5 +9,4 @@ import pro.sky.animalizer.model.Shelter;
  */
 @Repository
 public interface ShelterRepository extends JpaRepository<Shelter, Long> {
-
 }
