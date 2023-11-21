@@ -8,6 +8,7 @@ import pro.sky.animalizer.exceptions.UserNotFoundException;
 import pro.sky.animalizer.model.Pet;
 import pro.sky.animalizer.repositories.PetRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,6 @@ public class PetService {
     public Pet getPetById(Long petId) {
         logger.info("getPetById method has been invoked");
         logger.debug("Requesting info for Pet with id: {}", petId);
-        logger.error("There is no Pet with id: " + petId);
         return petRepository.findById(petId).orElseThrow(PetNotFoundException::new);
     }
 
@@ -35,13 +35,13 @@ public class PetService {
         logger.info("getAllPets method has been invoked");
         return petRepository.findAll();
     }
+
     public Pet getPetByUserId(Long userId) {
         logger.info("getPetByUserId method has been invoked");
         logger.debug("Requesting info for Pet with user's id: {}", userId);
         logger.error("There is no user with id: " + userId);
         return petRepository.findByAdopter_id(userId).orElseThrow(UserNotFoundException::new);
     }
-
 
     public Pet createPet(Pet pet) {
         logger.info("createPet method has been invoked");
@@ -63,5 +63,9 @@ public class PetService {
         logger.error("There is no pet with id: " + petId);
         Pet deletePet = petRepository.findById(petId).orElseThrow(PetNotFoundException::new);
         petRepository.delete(deletePet);
+    }
+
+    public Collection<Pet> getAllPetsWithoutAdopter() {
+        return petRepository.findAllWithoutAdopter();
     }
 }

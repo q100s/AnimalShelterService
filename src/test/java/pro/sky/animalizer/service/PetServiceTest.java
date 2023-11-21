@@ -27,7 +27,16 @@ public class PetServiceTest {
     PetService petService;
 
     @Test
-    void getAllPetTest() {
+    void testGetPetById() {
+        Pet petTest = new Pet();
+        petTest.setId(2L);
+        when(petRepositoryMock.findById(2L)).thenReturn(Optional.of(petTest));
+        assertEquals(petService.getPetById(2L), petTest);
+        assertThrows(PetNotFoundException.class, () -> petService.getPetById(3L));
+    }
+
+    @Test
+    void testGetAllPet() {
         List<Pet> listPetTest = new ArrayList<>();
         when(petRepositoryMock.findAll()).thenReturn(listPetTest);
         assertEquals(petService.getAllPets(), listPetTest);
@@ -35,41 +44,26 @@ public class PetServiceTest {
     }
 
     @Test
-    void getPetByIdTest() {
-        Pet petTest = new Pet();
-        petTest.setId(2L);
-        when(petRepositoryMock.findById(2L)).thenReturn(Optional.of(petTest));
-        assertEquals(petService.getPetById(2L), petTest);
-    }
-
-    @Test
-    void getPetByIdTestException() {
-        Pet petTest = new Pet();
-        petTest.setId(2L);
-        assertThrows(PetNotFoundException.class, () -> petService.getPetById(2L));
-    }
-
-    @Test
-    void createPetTest() {
+    void testCreatePet() {
         Pet actualPet = new Pet();
         when(petRepositoryMock.save(actualPet)).thenReturn(actualPet);
         assertEquals(petService.createPet(actualPet), actualPet);
     }
 
     @Test
-    void editPetTest() {
+    void testEditPet() {
         Pet petTest = new Pet();
         petTest.setId(1L);
         petTest.setPetType("Cat");
         petTest.setPetName("Vasya");
         petTest.setId(4L);
-        Mockito.doReturn(Optional.ofNullable(petTest))
+        Mockito.doReturn(Optional.of(petTest))
                 .when(petRepositoryMock).findById(4L);
         assertEquals(Optional.of(petTest), petRepositoryMock.findById(4L));
     }
 
     @Test
-    void editPetTestException() {
+    void testEditPetException() {
         Pet petTest = new Pet();
         petTest.setId(1L);
         petTest.setPetType("Cat");
@@ -79,7 +73,7 @@ public class PetServiceTest {
     }
 
     @Test
-    void deletePet() {
+    void testDeletePet() {
         Pet petTest = new Pet();
         petTest.setId(1L);
         petTest.setPetType("Cat");

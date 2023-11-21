@@ -25,7 +25,9 @@ public class UserService {
     private final PetService petService;
     private final TelegramBot telegramBot;
 
-    public UserService(UserRepository userRepository, PetService petService, TelegramBot telegramBot) {
+    public UserService(UserRepository userRepository,
+                       PetService petService,
+                       TelegramBot telegramBot) {
         this.userRepository = userRepository;
         this.petService = petService;
         this.telegramBot = telegramBot;
@@ -66,6 +68,7 @@ public class UserService {
         User userCheck = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.delete(userCheck);
     }
+
     public User connectUserAndPet(Long userId, Long petId) {
         logger.info("start method approveAdopterAndSendCongratulation");
         User newAdopter = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -78,10 +81,13 @@ public class UserService {
         petService.createPet(adoptedPet);
         return newAdopter;
     }
+
     public User extendTrialPeriod(Long userId, int additionalDays) {
         User adopterForExtension = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Long telegramId = adopterForExtension.getTelegramId();
         adopterForExtension.setEndingOfTrialPeriod(LocalDate.now().plusDays(additionalDays));
         userRepository.save(adopterForExtension);
+        telegramBot.execute(new SendMessage(telegramId, "Твой испытательный срок продлён на " + additionalDays + " дней"));
         return adopterForExtension;
     }
 
@@ -95,6 +101,19 @@ public class UserService {
         telegramBot.execute(new SendMessage(telegramId, "Поздравляю, ты прошёл испытательный срок!"));
         return "Пользователь с телеграм-id: " + telegramId + " прошёл испытательный срок";
     }
+
+    public String rejectAdopter(Long userId) {
+        logger.info("start method rejectAdopter");
+        User rejectedAdopter = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Pet rejectedPet = petService.getPetByUserId(rejectedAdopter.getId());
+        Long telegramId = rejectedAdopter.getTelegramId();
+        userRepository.delete(rejectedAdopter);
+        rejectedPet.setAdopter(null);
+        petService.createPet(rejectedPet);
+        telegramBot.execute(new SendMessage(telegramId, "Ты не прошел испрытательный срок, ожидай звонка от волонтера"));
+        return "Пользователь с телеграм-id: " + telegramId + " не прошёл испытательный срок";
+    }
+
     public List<User> findAllWithEndOfTrialPeriod() {
         return userRepository.findAll().stream()
                 .filter(user -> user.getEndingOfTrialPeriod().equals(LocalDate.now()))

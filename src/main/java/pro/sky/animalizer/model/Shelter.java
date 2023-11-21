@@ -24,7 +24,12 @@ public class Shelter {
     public Shelter() {
     }
 
-    public Shelter(String address, String securityPhoneNumber, String schedule, String safetyMeasures, String directionPathFile, String shelterType) {
+    public Shelter(String address,
+                   String securityPhoneNumber,
+                   String schedule,
+                   String safetyMeasures,
+                   String directionPathFile,
+                   String shelterType) {
         this.address = address;
         this.securityPhoneNumber = securityPhoneNumber;
         this.schedule = schedule;

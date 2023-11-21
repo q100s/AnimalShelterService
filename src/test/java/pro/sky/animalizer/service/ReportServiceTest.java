@@ -30,13 +30,13 @@ public class ReportServiceTest {
 
 
     @Test
-    void createReport() {
+    void testCreateReport() {
         when(reportRepositoryMock.save(reportTest)).thenReturn(reportTest);
         assertEquals(reportRepositoryMock.save(reportTest), reportTest);
     }
 
     @Test
-    void findAllReports() {
+    void testFindAllReports() {
         List<Report> listTest = new ArrayList<>();
         when(reportRepositoryMock.findAll()).thenReturn(listTest);
         assertEquals(reportService.findAllReports(), listTest);
@@ -44,13 +44,13 @@ public class ReportServiceTest {
 
 
     @Test
-    void findReportByIdWhenReportIsNotFound() {
+    void testFindReportByIdWhenReportIsNotFound() {
         assertThrows(ReportNotFondException.class,
                 () -> reportService.findReportById(4L));
     }
 
     @Test
-    void findReportByTelegramId() {
+    void testFindReportByTelegramId() {
         reportsByTelegramId.add(reportTest);
         when(reportRepositoryMock.findAllByTelegramId(1L)).thenReturn(reportsByTelegramId);
         assertEquals(reportService.findReportsByTelegramId(1L), reportsByTelegramId);
@@ -58,7 +58,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    void findReportById() {
+    void testFindReportById() {
         assertThrows(ReportNotFondException.class,
                 () -> reportService.findReportById(4L));
     }
