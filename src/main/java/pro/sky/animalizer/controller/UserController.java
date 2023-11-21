@@ -255,7 +255,29 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Подтверждение прохождение испытательного срока усыновителем",
+            summary = "Подтверждение провала испытательного срока усыновителем",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Пользователь не прошёл испытательный срок и удален из базы данных, " +
+                                    "питомцу в поле усыновителдь присвоен null",
+                            content = {@Content(
+                                    schema = @Schema(implementation = String.class)
+                            )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Пользователь с переданным идентификатором отсутствует в базе данных"
+                    )
+            })
+    @DeleteMapping("/reject")
+    public String rejectAdopter(@Parameter(description = "Идентификатор для поиска") @RequestParam Long id) {
+        return userService.rejectAdopter(id);
+    }
+
+    @Operation(
+            summary = "Подтверждение прохождения испытательного срока усыновителем",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -292,6 +314,7 @@ public class UserController {
     public List<User> findAllWithEndOfTrialPeriod() {
         return userService.findAllWithEndOfTrialPeriod();
     }
+
     @Operation(
             summary = "Отправка пользователю с переданным идентификатором о плохом заполнении отчетов",
             responses = {

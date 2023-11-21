@@ -21,7 +21,8 @@ public class Request {
     private Long telegramId;
     private String requestText;
 
-    public Request(Long chatId, LocalDateTime requestTime, String requestText) {
+    public Request(Long chatId,
+                   String requestText) {
         this.chatId = chatId;
         this.requestText = requestText;
     }

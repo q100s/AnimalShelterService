@@ -30,12 +30,17 @@ public class User {
     public User() {
     }
 
-    public User(Long telegramId, String telegramNick) {
+    public User(Long telegramId,
+                String telegramNick) {
         this.telegramId = telegramId;
         this.telegramNick = telegramNick;
     }
 
-    public User(Long telegramId, String telegramNick, String fullName, String phoneNumber, UserType userType) {
+    public User(Long telegramId,
+                String telegramNick,
+                String fullName,
+                String phoneNumber,
+                UserType userType) {
         this.telegramId = telegramId;
         this.telegramNick = telegramNick;
         this.fullName = fullName;
