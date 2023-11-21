@@ -8,9 +8,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.sky.animalizer.exceptions.PetNotFoundException;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
-import pro.sky.animalizer.model.*;
+import pro.sky.animalizer.model.Shelter;
 import pro.sky.animalizer.repositories.ShelterRepository;
 
 import java.util.ArrayList;
@@ -29,20 +28,23 @@ public class ShelterServiceTest {
     @InjectMocks
     private ShelterService shelterService;
     Shelter shelterTest = new Shelter("111", "222", "333", "444", "c:\\", "555");
+
     @Test
-    void createShelter() {
+    void testCreateShelter() {
         Shelter actualS = shelterService.createShelter(new Shelter("111", "222", "333", "444", "c:\\", "555"));
         assertEquals(repository.save(shelterTest), actualS);
     }
+
     @Test
-    void editShelter() {
+    void testEditShelter() {
         shelterTest.setId(1L);
         Mockito.doReturn(Optional.ofNullable(shelterTest))
                 .when(repository).findById(1L);
         assertEquals(Optional.of(shelterTest), repository.findById(1L));
     }
+
     @Test
-    void getShelterById() {
+    void testGetShelterById() {
         Shelter shelterActual = new Shelter();
         shelterActual.setId(2L);
         shelterActual.setSecurityPhoneNumber("79999999999");
@@ -52,14 +54,16 @@ public class ShelterServiceTest {
                 .when(repository).findById(2L);
         assertEquals(Optional.of(shelterActual), repository.findById(2L));
     }
+
     @Test
-    void getAllShelters() {
+    void testGetAllShelters() {
         List<Shelter> listTest = new ArrayList<>();
         when(repository.findAll()).thenReturn(listTest);
         assertEquals(repository.findAll(), listTest);
     }
+
     @Test
-        void deleteShelter() {
+    void testDeleteShelter() {
         Shelter s = new Shelter();
         s.setId(1L);
         s.setShelterType("Cat");
