@@ -54,13 +54,35 @@ public class PetController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "питомеца с переданным id не существует"
+                            description = "питомца с переданным id не существует"
                     )
             })
     @GetMapping("/{id}")
     public Pet getPetById(@Parameter(description = "Идентификатор для поиска") @PathVariable("id") Long id) {
         return service.getPetById(id);
     }
+    @Operation(
+            summary = "Поиск питомца по идентификатору усыновителя",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "питомец, найденный по идентификатору усыновителя",
+                            content = {@Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet.class)
+                            )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "усыновителя с переданным id не существует"
+                    )
+            })
+    @GetMapping("/by{userId}")
+    public Pet getPetByUserId(@Parameter(description = "Идентификатор усыновителя для поиска") @PathVariable("userId") Long userId) {
+        return service.getPetByUserId(userId);
+    }
+
 
     @Operation(
             summary = "Добавление питомеца в базу данных",

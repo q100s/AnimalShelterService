@@ -14,13 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.animalizer.exceptions.ShelterNotFoundException;
-import pro.sky.animalizer.model.Pet;
-import pro.sky.animalizer.model.Report;
-import pro.sky.animalizer.model.Request;
-import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.exceptions.UserNotFoundException;
+import pro.sky.animalizer.model.*;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +58,7 @@ public class UserRequestService {
         this.petService = petService;
     }
 
-    public void sendStartMessage(Update update) {
+    public void sendMessageWithResult(Update update) {
         Message message = update.message();
         Long chatId = message.chat().id();
         String firstName = update.message().from().firstName();
@@ -68,13 +67,9 @@ public class UserRequestService {
         if (Boolean.TRUE.equals(updateUserInfoStateByChatId.get(chatId))) {
             updateUser(update);
         } else if (Boolean.TRUE.equals(reportStateByChatId.get(chatId))) {
-            takeReportFromUser(update);
+            getReportFromUser(update);
         } else if (Boolean.TRUE.equals(questionToVolunteerStateByChatId.get(chatId))) {
-            String requestText = message.text();
-            Request request = new Request(chatId, telegramId, requestText);
-            requestService.saveRequest(request);
-            telegramBot.execute(new SendMessage(chatId, "Твоё обращение передано волонтеру"));
-            questionToVolunteerStateByChatId.remove(chatId);
+            sendMessageWithQuestionToVolunteer(update);
         } else if ("/start".equalsIgnoreCase(message.text())) {
             User user = userService.findUserByTelegramId(telegramId);
             if (user == null) {
@@ -112,11 +107,11 @@ public class UserRequestService {
             User userByTelegramId = userService.findUserByTelegramId(telegramId);
             if (userByTelegramId != null) {
                 Long userId = userByTelegramId.getId();
-                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber);
+                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.DEFAULT);
                 userService.editUser(userId, updatedUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             } else {
-                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber);
+                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.DEFAULT);
                 userService.createUser(newUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             }
@@ -127,26 +122,29 @@ public class UserRequestService {
     }
 
     /**
-     * Метод, принимающий от пользователя отчет и сохраняющий его в базе данных.<br>
+     * Метод, принимающий от пользователя отчет и сохраняющий его в базе данных.
      * <p>
-     * #{@link TelegramBot#execute(BaseRequest)}
-     * #{@link ReportService#createReport(Report)}
+     * #{@link TelegramBot#execute(BaseRequest)} <br>
+     * #{@link ReportService#createReport(Report)} <br>
      *
      * @param update апдейт, приходящий из telegram чата с пользователем.
      */
-    public void takeReportFromUser(Update update) {
+    public void getReportFromUser(Update update) {
         Long chatId = update.message().chat().id();
-        long telegramId = update.message().from().id();
+        Long telegramId = update.message().from().id();
+        LocalDate reportDate = LocalDate.now();
         if (update.message().caption() == null || update.message().photo() == null) {
-            SendMessage message = new SendMessage(chatId, "Некорректный формат отчета! Попробуй ещё раз");
+            SendMessage message = new SendMessage(
+                    chatId, "Некорректный формат отчета! Попробуй ещё раз");
             telegramBot.execute(message);
         } else {
             String reportText = update.message().caption();
             GetFile getFile = new GetFile(update.message().photo()[update.message().photo().length - 1].fileId());
             GetFileResponse response = telegramBot.execute(getFile);
             String imageUrl = telegramBot.getFullFilePath(response.file());
-            Report newReport = new Report(imageUrl, reportText, telegramId);
-            SendMessage message = new SendMessage(chatId, "Спасибо за отчёт, результат проверки узнаете в течение дня!");
+            Report newReport = new Report(reportDate, imageUrl, reportText, telegramId);
+            SendMessage message = new SendMessage(
+                    chatId, "Спасибо за отчёт, результат проверки узнаете в течение дня!");
             telegramBot.execute(message);
             reportService.createReport(newReport);
             reportStateByChatId.remove(chatId);
@@ -154,12 +152,43 @@ public class UserRequestService {
     }
 
     /**
+     * Метод, сохраняющий вопрос от пользователя в базу данных и отправляющий его в чат волонтеру. <br>
+     * <p>
+     * #{@link TelegramBot#execute(BaseRequest)} <br>
+     * #{@link RequestService#saveRequest(Request)} <br>
+     * #{@link UserService#getAllUsers()} <br>
+     * #{@link User#getUserType()} <br>
+     * #{@link User#getTelegramId()}
+     *
+     * @param update апдейт, приходящий из telegram чата с пользователем.
+     */
+    public void sendMessageWithQuestionToVolunteer(Update update) {
+        Long chatId = update.message().chat().id();
+        Long telegramId = update.message().from().id();
+        String requestText = update.message().text();
+        Request request = new Request(chatId, telegramId, requestText);
+        requestService.saveRequest(request);
+        telegramBot.execute(new SendMessage(chatId, "Твоё обращение передано волонтеру"));
+        questionToVolunteerStateByChatId.remove(chatId);
+        String textForVolunteer = "Пользователь с телеграм-id " + request.getTelegramId() + " обратился с вопросом: \n"
+                + request.getRequestText();
+        Long volunteerChatId = userService.getAllUsers().stream()
+                .filter(user -> user.getUserType().equals(UserType.VOLUNTEER))
+                .findAny().orElseThrow(UserNotFoundException::new)
+                .getTelegramId();
+        telegramBot.execute(new SendMessage(volunteerChatId, textForVolunteer));
+    }
+
+    /**
      * Метод, обрабатывающий резултаты нажатия на кнопки меню.
+     *
+     * @param update апдейт, приходящий из telegram чата с пользователем.
      */
     public void createButtonClick(Update update) {
         CallbackQuery callbackQuery = update.callbackQuery();
         if (callbackQuery != null) {
             long chatId = callbackQuery.message().chat().id();
+            long telegramId = callbackQuery.message().from().id();
             String data = callbackQuery.data();
             switch (data) {
                 case "cat's shelter":
@@ -318,7 +347,7 @@ public class UserRequestService {
                     getMenuWithDogs(chatId);
                     break;
             }
-            List<Pet> pets = petService.getAllPets();
+            Collection<Pet> pets = petService.getAllPetsWithoutAdopter();
             for (Pet pet : pets) {
                 if (data.equals(pet.getPetName())) {
                     String photoUrlPath = pet.getPhotoUrlPath();
@@ -332,6 +361,7 @@ public class UserRequestService {
                 }
             }
         }
+
     }
 
     /**
@@ -396,7 +426,7 @@ public class UserRequestService {
      */
     public void getMenuWithCatsShelterOptions(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Что именно ты хочешь узнать: ");
+                new SendMessage(chatId, "Выбери интересующий тебя вопрос:");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithCatsShelterOption());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -413,7 +443,7 @@ public class UserRequestService {
      */
     public void getMenuWithDogsShelterOptions(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Что именно ты хочешь узнать: ");
+                new SendMessage(chatId, "Выбери интересующий тебя вопрос:");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithDogsShelterOptions());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -430,7 +460,7 @@ public class UserRequestService {
      */
     public void getMenuWithDogsAdoptionInfo(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Ниже представлена ионформация для усыновления собаки: ");
+                new SendMessage(chatId, "Ниже представлена ионформация для усыновления собаки:");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithDogsAdoptionInfo());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -447,7 +477,7 @@ public class UserRequestService {
      */
     public void getMenuWithCatsAdoptionInfo(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Ниже представлена информация для усыновления кошки: ");
+                new SendMessage(chatId, "Ниже представлена информация для усыновления кошки:");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithCatsAdoptionInfo());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -457,7 +487,7 @@ public class UserRequestService {
 
     public void getMenuWithCats(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Выбери кошку, на которую хочешь взглянуть: ");
+                new SendMessage(chatId, "Выбери кошку, на которую хочешь взглянуть:");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithCats());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {
@@ -467,7 +497,7 @@ public class UserRequestService {
 
     public void getMenuWithDogs(Long chatId) {
         SendMessage sendMessage =
-                new SendMessage(chatId, "Выбери собаку, на которую хочешь взглянуть: ");
+                new SendMessage(chatId, "Выбери собаку, на которую хочешь взглянуть:");
         sendMessage.replyMarkup(inlineKeyboardMarkupService.createMenuWithDogs());
         SendResponse sendResponse = telegramBot.execute(sendMessage);
         if (!sendResponse.isOk()) {

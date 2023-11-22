@@ -28,13 +28,16 @@ CREATE TABLE users (
     telegram_nick VARCHAR,
     full_name VARCHAR,
     phone_number VARCHAR,
-    car_number VARCHAR
+    user_type VARCHAR, -- enum UserType
+    ending_of_trial_period DATE,
+    pet_id BIGINT
 );
 --liquibase formatted sql
 
 --changeset markovka77:4
 CREATE TABLE reports (
     id BIGSERIAL PRIMARY KEY,
+    report_date DATE,
     photo_path VARCHAR,
     text VARCHAR,
     telegram_id BIGINT
@@ -47,5 +50,6 @@ CREATE TABLE pet (
     id BIGSERIAL PRIMARY KEY,
     pet_type VARCHAR,
     pet_name VARCHAR,
-    photo_url_path VARCHAR
+    photo_url_path VARCHAR,
+    users_id BIGINT
 );

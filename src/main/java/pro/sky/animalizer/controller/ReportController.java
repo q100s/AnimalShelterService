@@ -24,13 +24,14 @@ import java.util.Collection;
 @RequestMapping("/report")
 public class ReportController {
     private final ReportService reportService;
+  
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
     @Operation(
-            summary = "Поиск всех отчетов, находящихся в базе данных",
+            summary = "Получение всех отчетов, находящихся в базе данных",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -55,7 +56,7 @@ public class ReportController {
                             description = "Отчет, найденный по идентификатору",
                             content = {@Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = Report.class)
                             )
                             }
                     ),
@@ -74,10 +75,10 @@ public class ReportController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Коллекция отчетов, найденный по telegram-идентификатору",
+                            description = "Коллекция отчетов, найденных по telegram-идентификатору",
                             content = {@Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = User.class)
+                                    array = @ArraySchema(schema = @Schema(implementation = Report[].class))
                             )
                             }
                     ),
@@ -87,7 +88,7 @@ public class ReportController {
                     )
             })
     @GetMapping("/by{telegramId}")
-    public ResponseEntity<Collection<Report>> findByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
+    public ResponseEntity<Collection<Report>> findAllByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
                                                  @PathVariable long telegramId) {
         Collection<Report> reportsByTelegramId = reportService.findReportsByTelegramId(telegramId);
         if (reportsByTelegramId == null) {
@@ -95,6 +96,34 @@ public class ReportController {
             return ResponseEntity.badRequest().build();
         } else {
             return ResponseEntity.ok(reportsByTelegramId);
+        }
+    }
+    @Operation(
+            summary = "Поиск последнего отправленного отчета пользователем с переданным telegram-идентификатором",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Последний отчет, найденный по telegram-идентификатору",
+                            content = {@Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = User.class)
+                            )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "У пользователя, с переданным telegram-идентификатором нет отчетов "
+                    )
+            })
+    @GetMapping("/lastBy{telegramId}")
+    public ResponseEntity<Report> findLastByTelegramId(@Parameter(description = "Telegram-Идентификатор для поиска")
+                                                               @PathVariable long telegramId) {
+        Report lastReportByTelegramId = reportService.findLastReportByTelegramId(telegramId);
+        if (lastReportByTelegramId == null) {
+            logger.error("У пользователя с телеграм-id " + telegramId + " нет отчетов.");
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok(lastReportByTelegramId);
         }
     }
 }

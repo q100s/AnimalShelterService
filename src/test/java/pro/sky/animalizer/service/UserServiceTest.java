@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalizer.exceptions.UserNotFoundException;
 import pro.sky.animalizer.model.User;
+import pro.sky.animalizer.model.UserType;
 import pro.sky.animalizer.repositories.UserRepository;
 
 import java.util.ArrayList;
@@ -26,19 +27,19 @@ class UserServiceTest {
     private UserService userService;
 
 
-    User userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
+    User userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER);
 
 
     @Test
     void createUser() {
-        User actual = userService.createUser(new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101"));
+        User actual = userService.createUser(new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER));
         assertEquals(userRepositoryMock.save(userTest), actual);
 
     }
 
     @Test
     void findUserByIdWhenTheUserNotFound() {
-        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
+        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER);
         userTest.setId(3L);
         assertThrows(UserNotFoundException.class, () -> userService.findUserById(2L));
 
@@ -46,7 +47,7 @@ class UserServiceTest {
 
     @Test
     void findUserByIdOk() {
-        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
+        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER);
         userTest.setId(3L);
         when(userRepositoryMock.findById(3L)).thenReturn(Optional.ofNullable(userTest));
         assertEquals(userService.findUserById(3L), userTest);
@@ -72,7 +73,7 @@ class UserServiceTest {
 
     @Test
     void editUser() {
-        userTest = new User(067L, "Ivan", "Ivan Ivanov", "000040404059");
+        userTest = new User(067L, "Ivan", "Ivan Ivanov", "000040404059", UserType.ADOPTER);
         userTest.setId(3L);
         Mockito.doReturn(Optional.ofNullable(userTest))
                 .when(userRepositoryMock).findById(3L);

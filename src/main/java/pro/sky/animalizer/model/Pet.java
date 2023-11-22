@@ -1,9 +1,8 @@
 package pro.sky.animalizer.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -17,6 +16,10 @@ public class Pet {
     private String petType;
     private String petName;
     private String photoUrlPath;
+    @OneToOne
+    @JoinColumn(name = "users_id")
+    @JsonIgnore
+    private User adopter;
 
     public Pet() {
     }
@@ -53,13 +56,23 @@ public class Pet {
         this.photoUrlPath = photoUrlPath;
     }
 
+    public User getAdopter() {
+        return adopter;
+    }
+
+    public void setAdopter(User adopter) {
+        this.adopter = adopter;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(petType, pet.petType)
-                && Objects.equals(petName, pet.petName) && Objects.equals(photoUrlPath, pet.photoUrlPath);
+        return Objects.equals(id, pet.id)
+                && Objects.equals(petType, pet.petType)
+                && Objects.equals(petName, pet.petName)
+                && Objects.equals(photoUrlPath, pet.photoUrlPath);
     }
 
     @Override

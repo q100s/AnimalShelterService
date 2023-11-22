@@ -16,12 +16,13 @@ import java.util.Objects;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // уникальный id обращения
-    private Long chatId; // id телеграмм чата
-    private Long telegramId; // id телеграм пользователя
-    private String requestText;  // текст обращения - с сутью обращения
+    private Long id;
+    private Long chatId;
+    private Long telegramId;
+    private String requestText;
 
-    public Request(Long chatId, LocalDateTime requestTime, String requestText) {
+    public Request(Long chatId,
+                   String requestText) {
         this.chatId = chatId;
         this.requestText = requestText;
     }
@@ -73,7 +74,8 @@ public class Request {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Request request = (Request) o;
-        return Objects.equals(id, request.id) && Objects.equals(chatId, request.chatId)
+        return Objects.equals(id, request.id)
+                && Objects.equals(chatId, request.chatId)
                 && Objects.equals(telegramId, request.telegramId)
                 && Objects.equals(requestText, request.requestText);
     }
