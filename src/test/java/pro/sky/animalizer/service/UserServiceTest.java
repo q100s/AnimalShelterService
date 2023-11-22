@@ -1,5 +1,6 @@
 package pro.sky.animalizer.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalizer.exceptions.UserNotFoundException;
+import pro.sky.animalizer.model.Pet;
 import pro.sky.animalizer.model.User;
 import pro.sky.animalizer.model.UserType;
 import pro.sky.animalizer.repositories.UserRepository;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -86,4 +89,6 @@ class UserServiceTest {
         userTest.setId(3L);
         assertThrows(UserNotFoundException.class, () -> userService.deleteUserById(3L));
     }
+
+
 }
