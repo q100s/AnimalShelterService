@@ -230,7 +230,7 @@ public class InlineKeyboardMarkupService {
      */
     public InlineKeyboardMarkup createMenuWithCats() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<String> catsNames = petService.getAllPets().stream()
+        List<String> catsNames = petService.getAllPetsWithoutAdopter().stream()
                 .filter(pet -> pet.getPetType().equals("кошка"))
                 .map(Pet::getPetName)
                 .toList();
@@ -249,7 +249,7 @@ public class InlineKeyboardMarkupService {
      */
     public InlineKeyboardMarkup createMenuWithDogs() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<String> dogsNames = petService.getAllPets().stream()
+        List<String> dogsNames = petService.getAllPetsWithoutAdopter().stream()
                 .filter(pet -> pet.getPetType().equals("собака"))
                 .map(Pet::getPetName)
                 .toList();

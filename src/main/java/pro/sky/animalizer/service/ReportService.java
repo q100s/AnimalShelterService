@@ -8,6 +8,7 @@ import pro.sky.animalizer.exceptions.ReportNotFondException;
 import pro.sky.animalizer.model.Report;
 import pro.sky.animalizer.repositories.ReportRepository;
 
+import javax.validation.constraints.Null;
 import java.util.Collection;
 
 @Service
@@ -24,7 +25,7 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-    public Collection<Report> findAllReports(){
+    public Collection<Report> findAllReports() {
         logger.info("Started findAllReport method");
         return reportRepository.findAll();
     }
@@ -39,9 +40,9 @@ public class ReportService {
         return reportRepository.findAllByTelegramId(telegramId);
     }
 
-    public Report findLastReportByTelegramId(Long telegramId){
+    public Report findLastReportByTelegramId(Long telegramId) {
         logger.info("start method findLastReportByTelegramId");
         logger.error("User with telegramId: " + telegramId + " have no reports");
-        return reportRepository.findLastReportByTelegramId(telegramId).orElseThrow(NoReportsException::new);
+        return reportRepository.findLastReportByTelegramId(telegramId).orElse(null);
     }
 }

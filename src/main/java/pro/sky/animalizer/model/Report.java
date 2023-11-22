@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Класс-модель, описывающая отчет.
+ */
 @Entity
 @Table(name = "reports")
 public class Report {
@@ -19,7 +22,10 @@ public class Report {
     public Report() {
     }
 
-    public Report(LocalDate reportDate, String photoPath, String text, Long telegramId) {
+    public Report(LocalDate reportDate,
+                  String photoPath,
+                  String text,
+                  Long telegramId) {
         this.reportDate = reportDate;
         this.photoPath = photoPath;
         this.text = text;
