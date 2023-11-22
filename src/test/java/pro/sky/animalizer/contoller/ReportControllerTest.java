@@ -29,39 +29,37 @@ public class ReportControllerTest {
 
 
     @BeforeEach
-    void setup(){
+    void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(reportController).build();
-
     }
 
     @Test
-    void getReportById() throws Exception {
+    void testGetReportById() throws Exception {
         mockMvc.perform(get("/report/{id}", 1L))
                 .andExpect(status().isOk());
-
     }
+
     @Test
-    void getReportByTelegramId() throws Exception {
+    void testGetReportByTelegramId() throws Exception {
         Collection<Report> listTest = new ArrayList<>();
         when(reportService.findAllReports()).thenReturn(listTest);
         mockMvc.perform(get("/report"))
                 .andExpect(status().isOk());
-
     }
+
     @Test
-    void getReportLastByTelegramId() throws Exception {
+    void testGetReportLastByTelegramId() throws Exception {
         Collection<Report> listTest = new ArrayList<>();
         when(reportService.findAllReports()).thenReturn(listTest);
         mockMvc.perform(get("/report"))
                 .andExpect(status().isOk());
-
     }
+
     @Test
-    void getReports() throws Exception {
+    void testGetReports() throws Exception {
         Collection<Report> listTest = new ArrayList<>();
         when(reportService.findAllReports()).thenReturn(listTest);
         mockMvc.perform(get("/report"))
                 .andExpect(status().isOk());
-
     }
 }

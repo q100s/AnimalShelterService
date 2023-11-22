@@ -1,6 +1,5 @@
 package pro.sky.animalizer.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ public class RequestServiceTest {
     Request request = new Request();
     Long requestsId;
     Long requestChatId;
+
     @BeforeEach
     void createNewRequest() {
         requestChatId = 111L;
@@ -25,11 +25,13 @@ public class RequestServiceTest {
         request.setRequestText(requestText);
 
     }
+
     @AfterEach
     void deleteNewRequest() {
         requestsId = request.getId();
         requestService.deleteRequest(requestsId);
     }
+
     @Test
     public void testSaveRequest() {
         Request savedRequest = requestService.saveRequest(request);
