@@ -14,6 +14,6 @@ import java.util.Optional;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
     Optional<Pet> findByAdopter_id(Long userId);
-    @Query(value = "SELECT * FROM pet WHERE pet.users_id = null", nativeQuery = true)
+    @Query(value = "SELECT * FROM pet WHERE pet.users_id isnull", nativeQuery = true)
     List<Pet> findAllWithoutAdopter();
 }

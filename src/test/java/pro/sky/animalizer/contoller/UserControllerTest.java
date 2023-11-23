@@ -85,8 +85,7 @@ public class UserControllerTest {
     void testConnectUserAndPet() throws Exception {
         User userTest = new User(1L, "Nikolay");
         Pet petTest = new Pet(2L, "Tobik");
-        UserType userType = UserType.ADOPTER;
-        User userActual = new User(1L, "NIkolay", "NIk", "79160000000", userType);
+        User userActual = new User(1L, "NIkolay", "NIk", "79160000000");
         when(userService.connectUserAndPet(1L, 2L)).thenReturn(userActual);
         mockMvc.perform(put("/user/setPet?userId=1&petId=2}"));
         Assertions.assertEquals(userService.connectUserAndPet(1L, 2L), userActual);

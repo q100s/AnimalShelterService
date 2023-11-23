@@ -27,26 +27,26 @@ class UserServiceTest {
     private UserService userService;
 
 
-    User userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER);
+    User userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
 
 
     @Test
     void testCreateUser() {
-        User actual = userService.createUser(new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER));
+        User actual = userService.createUser(new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101"));
         assertEquals(userRepositoryMock.save(userTest), actual);
 
     }
 
     @Test
     void testFindUserByIdWhenTheUserNotFound() {
-        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER);
+        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
         userTest.setId(3L);
         assertThrows(UserNotFoundException.class, () -> userService.findUserById(2L));
 
     }
     @Test
     void testFindUserByIdOk() {
-        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101", UserType.ADOPTER);
+        userTest = new User(0123L, "NikolayNick", "Nikolay Nikolaev", "9150010101");
         userTest.setId(3L);
         when(userRepositoryMock.findById(3L)).thenReturn(Optional.ofNullable(userTest));
         assertEquals(userService.findUserById(3L), userTest);
@@ -68,7 +68,7 @@ class UserServiceTest {
 
     @Test
     void testEditUser() {
-        userTest = new User(067L, "Ivan", "Ivan Ivanov", "000040404059", UserType.ADOPTER);
+        userTest = new User(067L, "Ivan", "Ivan Ivanov", "000040404059");
         userTest.setId(3L);
         Mockito.doReturn(Optional.ofNullable(userTest))
                 .when(userRepositoryMock).findById(3L);

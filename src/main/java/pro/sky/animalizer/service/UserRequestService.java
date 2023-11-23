@@ -107,11 +107,11 @@ public class UserRequestService {
             User userByTelegramId = userService.findUserByTelegramId(telegramId);
             if (userByTelegramId != null) {
                 Long userId = userByTelegramId.getId();
-                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.DEFAULT);
+                User updatedUser = new User(telegramId, telegramNick, fullName, phoneNumber);
                 userService.editUser(userId, updatedUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             } else {
-                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber, UserType.DEFAULT);
+                User newUser = new User(telegramId, telegramNick, fullName, phoneNumber);
                 userService.createUser(newUser);
                 telegramBot.execute(new SendMessage(chatId, "Ваши данные успешно сохранены"));
             }
