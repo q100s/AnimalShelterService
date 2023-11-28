@@ -39,13 +39,11 @@ public class User {
     public User(Long telegramId,
                 String telegramNick,
                 String fullName,
-                String phoneNumber,
-                UserType userType) {
+                String phoneNumber) {
         this.telegramId = telegramId;
         this.telegramNick = telegramNick;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.userType = userType;
     }
 
     public UserType getUserType() {

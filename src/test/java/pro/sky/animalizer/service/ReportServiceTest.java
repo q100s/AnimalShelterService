@@ -13,7 +13,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 
@@ -23,7 +24,7 @@ public class ReportServiceTest {
     private ReportRepository reportRepositoryMock;
     @InjectMocks
     private ReportService reportService;
-    Report reportTest = new Report(LocalDate.now(),"photoPathTest", "testText", 1L);
+    Report reportTest = new Report(LocalDate.now(), "photoPathTest", "testText", 1L);
 
     List<Report> reportsByTelegramId = new ArrayList<>();
     List<Report> emptyList = new ArrayList<>();

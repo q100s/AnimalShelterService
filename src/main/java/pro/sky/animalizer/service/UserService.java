@@ -116,6 +116,7 @@ public class UserService {
 
     public List<User> findAllWithEndOfTrialPeriod() {
         return userRepository.findAll().stream()
+                .filter(user -> user.getUserType().equals(UserType.VOLUNTEER))
                 .filter(user -> user.getEndingOfTrialPeriod().equals(LocalDate.now()))
                 .toList();
     }
